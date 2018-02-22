@@ -1,8 +1,11 @@
-package ncec.cfweb;
+package ncec.cfweb.repositories;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import ncec.cfweb.Catalog;
+import ncec.cfweb.CatalogException;
+import ncec.cfweb.Movie;
 
 /**
  *
@@ -41,9 +44,9 @@ public class CatalogManager {
     
     //void or boolean (at least boolean can be useless into check by web)
     public static void addMovie(Movie movie)throws CatalogException{
-        if(movies.containsKey(movie.getName())) {throw new CatalogException("Фильм с таким именем уже есть в менеджере");}//anything...
+        if(movies.containsKey(movie.getTitle())) {throw new CatalogException("Фильм с таким именем уже есть в менеджере");}//anything...
         else if(movies.containsValue(movie)) {throw new CatalogException("Такой фильм уже есть в менеджере");}
-        else movies.put(movie.getName(), movie);
+        else movies.put(movie.getTitle(), movie);
     }
     
 }

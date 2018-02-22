@@ -3,36 +3,56 @@ package ncec.cfweb;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import org.springframework.data.annotation.Id;
 
 /**
  *
  * @author DantalioNxxi
  */
+@Entity
 public class Person {
     
-    Gender gender;
-    String firstname;
-    String lasttname;
-    int age;
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String firstname;
+    private String lastname;
+    private int age;
+    private Gender gender;
     
-    EnumSet<Role.RoleMovie> career;
-    HashMap<String, EnumSet<Role.RoleMovie>> films;
+    EnumSet<Position> career;//under the question
+    
+//    HashMap<String, EnumSet<Position>> films;
+//    Set<Movie> films;
+    
+    //ManyToMany
+    private Set<Personage> personages;
+    
+//    by position or ManyToMany?
+    private Set<Movie> movies;
 
-    public Person(Gender gender, String firstname, String lasttname, int age) {
+    public Person() {
+    }
+
+    public Person(Gender gender, String firstname, String lastname, int age) {
         this.gender = gender;
         this.firstname = firstname;
-        this.lasttname = lasttname;
+        this.lastname = lastname;
         this.age = age;
     }
     
-    public void setMovie(String name, EnumSet<Role.RoleMovie> roles){
-        films.put(name, roles);
-        career.addAll(roles);
-    }
-    
-    public void addRole(Role.RoleMovie role){
-        career.add(role);
-    }
+//    public void setMovie(String name, EnumSet<Position> roles){
+//        films.put(name, roles);
+//        career.addAll(roles);
+//    }
+//    
+//    public void addRole(Position role){
+//        career.add(role);
+//    }
     
     
 }

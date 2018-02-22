@@ -1,6 +1,8 @@
-package ncec.cfweb;
+package ncec.cfweb.repositories;
 
 import java.util.HashMap;
+import ncec.cfweb.User;
+import ncec.cfweb.UserException;
 
 /**
  *

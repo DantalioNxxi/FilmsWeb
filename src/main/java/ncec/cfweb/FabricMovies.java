@@ -1,5 +1,7 @@
 package ncec.cfweb;
 
+import ncec.cfweb.repositories.CatalogManager;
+
 /**
  *
  * @author DantalioNxxi
