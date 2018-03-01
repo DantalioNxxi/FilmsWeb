@@ -1,15 +1,20 @@
 package ncec.cfweb;
 
-import ncec.cfweb.repositories.CatalogManager;
+import ncec.cfweb.services.FabricMovies;
 import java.util.HashMap;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.IdClass;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -17,15 +22,23 @@ import org.springframework.data.annotation.Id;
  * @author DantalioNxxi
  */
 @Entity
+@Table(name = "catalog_table")
 public class Catalog {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    String name;
+    @Getter
+    @Setter
+    @Column(name = "id", length = 8, nullable = false, updatable = false)
+    private Long catalogId;
+    
+//    @Getter
+//    @Setter
+    private String name;
+
     
     //need it?
-    FabricMovies fm;
+//    FabricMovies fm;
     
     //in generally, is it need? then optional i TRUE??????
     @ManyToOne(optional = true, cascade = CascadeType.ALL)
@@ -41,15 +54,19 @@ public class Catalog {
     protected Catalog() {
     }
     
-    public Catalog(String name) {
-        this.name = name;
-    }
-
-    public Catalog(User creator, String name) {
-        this.creator = creator;
-        this.name = name;
-    }
+//    public Catalog(String name) {
+//        this.name = name;
+//    }
+//
+//    public Catalog(User creator, String name) {
+//        this.creator = creator;
+//        this.name = name;
+//    }
+//    
     
+    
+}
+
 //    public Movie getMovie(String name){
 //        Movie need;
 //        if(!films.containsKey(name)){
@@ -89,5 +106,3 @@ public class Catalog {
 //        //creating film
 //        films.remove(name);
 //    }
-    
-}
