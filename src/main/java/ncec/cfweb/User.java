@@ -7,6 +7,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -14,14 +17,23 @@ import org.springframework.data.annotation.Id;
  * @author DantalioNxxi
  */
 @Entity
+@Table(name = "user_table")
 public class User {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 //    private int id;
+    
+    @Getter
+    @Setter
     private String firstname;
+    
+    @Getter
+    @Setter
     private String lastname;
+    
+    //составной ключ
     private String login;
     
     //Is Need???
@@ -51,13 +63,13 @@ public class User {
         return id;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
+//    public String getFirstname() {
+//        return firstname;
+//    }
+//
+//    public String getLastname() {
+//        return lastname;
+//    }
 
     public String getLogin() {
         return login;
