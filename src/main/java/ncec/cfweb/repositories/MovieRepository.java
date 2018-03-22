@@ -12,8 +12,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MovieRepository extends CrudRepository<Movie, Long>{
     
-    List<Movie> findByName(String name);//is rightly? there is not necessary a query-format?
+    List<Movie> findByTitle(String name);//is rightly? there is not necessary a query-format?
     
-    Movie findById(Integer id);
-    
+    Movie findById(Long id);
+
+    void deleteByTitle(String title);
+
+    @Override
+    List<Movie> findAll();
 }

@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  *
@@ -25,12 +25,12 @@ public class User {
     private Long id;
 //    private int id;
     
-    @Getter
-    @Setter
+//    @Getter
+//    @Setter
     private String firstname;
     
-    @Getter
-    @Setter
+//    @Getter
+//    @Setter
     private String lastname;
     
     //составной ключ
