@@ -5,17 +5,17 @@ import java.util.List;
 import ncec.cfweb.Movie;
 import ncec.cfweb.repositories.MovieRepository;
 import ncec.cfweb.services.MovieService;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  *
  * @author DantalioNxxi
  */
-@Configuration
 @Service
 public class MovieServiceImpl implements MovieService{
-    
+
+    @Autowired
     MovieRepository movieRepository;
 
     @Override
@@ -39,16 +39,17 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public void delete(String name) {//still without checking!
-        movieRepository.delete(movieRepository.findByName(name));
+//        movieRepository.delete(movieRepository.findByName(name));
+        movieRepository.deleteByTitle(name);
     }
 
     @Override
     public List<Movie> getByName(String name) {
-        return movieRepository.findByName(name);
+        return movieRepository.findByTitle(name);
     }
 
     @Override
-    public Movie getById(Integer id) {
+    public Movie getById(Long id) {
         return movieRepository.findById(id);
     }
     
@@ -60,7 +61,7 @@ public class MovieServiceImpl implements MovieService{
 
     @Override
     public List<Movie> getAll() {
-        return (List<Movie>)movieRepository.findAll();//is permit?
+        return movieRepository.findAll();//is permit?
     }
     
     

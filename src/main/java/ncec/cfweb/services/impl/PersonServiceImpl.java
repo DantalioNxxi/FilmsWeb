@@ -1,20 +1,21 @@
 package ncec.cfweb.services.impl;
 
-import java.util.List;
 import ncec.cfweb.Person;
 import ncec.cfweb.repositories.PersonRepository;
 import ncec.cfweb.services.PersonService;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *
  * @author DantalioNxxi
  */
-@Configuration
 @Service
 public class PersonServiceImpl implements PersonService{
-    
+
+    @Autowired
     PersonRepository personRepository;
 
     @Override

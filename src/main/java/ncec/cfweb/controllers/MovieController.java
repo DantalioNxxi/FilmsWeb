@@ -7,11 +7,14 @@ import ncec.cfweb.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -20,55 +23,50 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/movie")
 public class MovieController {
-    
+
     @Autowired
     MovieService movieService;
-    
-    @RequestMapping(value = "/movieInfo/{movieId}", method = RequestMethod.GET)
-    String movieInfo(Model model, 
-        @PathVariable(value = "movieId") Integer movieId){
+
+    @GetMapping(value = "/movieInfo/{movieId}")
+    ModelAndView movieInfo(@PathVariable(value = "movieId") Long movieId){
         Movie movie = movieService.getById(movieId);
-        model.addAttribute("movie", movie);
-        return "movieInfo";
+        return new ModelAndView("movieInfo", "movie", movie);
     }
-    
-    @RequestMapping(value = "/search-movie-page", method = RequestMethod.GET)
+
+    @GetMapping(value = "/search-movie-page")
     @ResponseBody
-    String searchMoviePage(Model model){
-        return "searchMoviePage";
+    String searchMoviePage(){
+        return "hello world";
     }
-    
-    @RequestMapping(value = "/search-movie-page", method = RequestMethod.POST)
-    String searchMovie(Model model,
-            @RequestParam(value="movieName") String movieName){
+
+    @PostMapping(value = "/search-movie-page")
+    String searchMovie(Model model, @RequestParam(value="movieName") String movieName){
         //check by parse for movieName
         List<Movie> movies = movieService.getByName(movieName);
         //where is the checking must being?
-        if (movies==null || movies.isEmpty()){
+        if (movies.isEmpty()){
             return "searchMovieFailPage";
-        }
-        else{
+        } else{
             model.addAttribute("movies", movies);
             return "searchMovieResaultPage";
         }
     }
-    
+
     @RequestMapping(value = "/search-movie-fail-page", method = RequestMethod.GET)
     @ResponseBody
     String searchMovieFailPage(Model model){
         return "searchMovieFailPage";
     }
-    
-    @RequestMapping(value = "/allMovies", method = RequestMethod.GET)
-    @ResponseBody
-    String allMovies(Model model){
-        return "allMovies";
+
+    @GetMapping(value = "/allMovies")
+    ModelAndView allMovies(){
+        return new ModelAndView("allMovies", "movies", movieService.getAll());
     }
-    
+
     //..
     //
-    
-    @RequestMapping(value = "/create-movie-page", method = RequestMethod.POST)
+
+    @PostMapping(value = "/create-movie-page")
     String createMovie(Model model,
             @RequestParam(value="movieName") String movieName,
             @RequestParam(value="date") Date date, // special form for to fit a date????
@@ -79,8 +77,8 @@ public class MovieController {
         model.addAttribute("movie", movie);
         return "movieInfo";
     }
-    
+
     //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
-    
+
     //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
 }

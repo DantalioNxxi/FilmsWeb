@@ -17,8 +17,8 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
 
     @Query("select u from Person u where u.firstname = :fname and u.lastname = :lname")
     List<Person> findByFirstAndLastName(@Param("fname") String firstname, @Param("lname") String lastname);
-    
+
+    List<Person> findByFirstnameAndLastname(String firstname, String lastname);
+
     Person findById(Long id);
-    
-    
 }
