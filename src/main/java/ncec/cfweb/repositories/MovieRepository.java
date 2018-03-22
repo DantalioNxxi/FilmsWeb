@@ -1,5 +1,6 @@
 package ncec.cfweb.repositories;
 
+import java.util.List;
 import ncec.cfweb.Movie;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MovieRepository extends CrudRepository<Movie, Long>{
     
-    Movie findByName(String name);//is rightly? there is not necessary a query-format?
+    List<Movie> findByName(String name);//is rightly? there is not necessary a query-format?
     
-    
+    Movie findById(Integer id);
     
 }

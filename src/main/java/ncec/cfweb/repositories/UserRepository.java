@@ -17,14 +17,17 @@ public interface UserRepository extends CrudRepository<User, Long>{
     @Query("select u from User u where u.login = :login")
     User getByLogin(@Param("login") String login);
     
+    User getById(Long id);
+    
     //there is necessary the query-format?
-    List<User> deleteByLogin(String login);
+    void deleteByLogin(String login);
+
+    void deleteById(Long id);
     
-    List<User> findByLogin(String login);
-    
+    User findByLogin(String login);
     
     @Query("select u from User u where u.firstname = :fname and u.lastname = :lname")
-    User getByFirstAndLastName(@Param("fname") String firstname, @Param("lname") String lastname);
+    List<User> getByFirstAndLastName(@Param("fname") String firstname, @Param("lname") String lastname);
     
 }
 
