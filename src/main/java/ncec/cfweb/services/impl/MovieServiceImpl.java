@@ -1,5 +1,6 @@
 package ncec.cfweb.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import ncec.cfweb.Movie;
 import ncec.cfweb.repositories.MovieRepository;
@@ -25,6 +26,12 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
+    public Movie addMovie(String title, Date date, int duration, String description) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+
+    @Override
     public Movie createMovie() {
         //another service?
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -36,10 +43,15 @@ public class MovieServiceImpl implements MovieService{
     }
 
     @Override
-    public Movie getByName(String name) {
+    public List<Movie> getByName(String name) {
         return movieRepository.findByName(name);
     }
 
+    @Override
+    public Movie getById(Integer id) {
+        return movieRepository.findById(id);
+    }
+    
     @Override
     public Movie editMovie(Movie movie) {
         //...

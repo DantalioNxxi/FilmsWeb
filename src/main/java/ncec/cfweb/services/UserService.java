@@ -14,16 +14,14 @@ public interface UserService {
     
     void delete(String login);
     
-    User getByLogin(String name);
+    User getByLogin(String login);
     
-    User getByFirstAndLastName(String firstname, String lastname);
+    User getById(Long id);
+    
+    List<User> getByFirstAndLastName(String firstname, String lastname);
     
     User editUser(User user);//or ?..
     
     List<User> getAll();
-    
-    
-    
-    
     
 }
