@@ -1,0 +1,14 @@
+[
+  {
+    "_class": "ncec.cfweb.Movie",
+    "title": "Godfather"
+  },
+  {
+    "_class": "ncec.cfweb.Movie",
+    "title": "Godfather II"
+  },
+  {
+    "_class": "ncec.cfweb.Movie",
+    "title": "Godfather III"
+  }
+]

@@ -5,13 +5,17 @@ import ncec.cfweb.Movie;
 import ncec.cfweb.User;
 import ncec.cfweb.repositories.UserRepository;
 import ncec.cfweb.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author DantalioNxxi
  */
-public class UserServiceImpl implements UserService{
-    
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
     UserRepository userRepository;
 
     @Override
@@ -21,8 +25,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void delete(String login) {
-        User delUser = userRepository.getByLogin(login);
-        userRepository.delete(delUser);
+//        User delUser = userRepository.getByLogin(login);
+        userRepository.deleteByLogin(login);
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  *
@@ -33,7 +34,7 @@ public class Movie {
     private String description;//????how to set it????
     
     //in generally, is it need?
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = true, cascade = CascadeType.ALL) // must be : optional = false
     private User creator;
     
     @OneToMany(targetEntity = Genre.class)
@@ -49,7 +50,8 @@ public class Movie {
     @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Person director;
     
-    @OneToMany//or print in DB-field
+//    @OneToMany//or print in DB-field
+    @ElementCollection
     private Set<String> countries;
     
     protected Movie() {
@@ -60,8 +62,15 @@ public class Movie {
         this.date = date;
         this.duration = duration;
     }
-    
-    
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setCreator(User creator) {
         this.creator = creator;
     }

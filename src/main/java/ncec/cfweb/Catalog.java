@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
 
 /**
  *
@@ -27,8 +27,8 @@ public class Catalog {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Getter
-    @Setter
+//    @Getter
+//    @Setter
     @Column(name = "id", length = 8, nullable = false, updatable = false)
     private Long catalogId;
     

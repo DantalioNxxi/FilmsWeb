@@ -7,7 +7,9 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 
 /**
  *
@@ -23,16 +25,19 @@ public class Person {
     private String lastname;
     private int age;
     private Gender gender;
-    
+
+    @Transient
     EnumSet<Position> career;//under the question
     
 //    HashMap<String, EnumSet<Position>> films;
 //    Set<Movie> films;
     
-    //ManyToMany
+//    ManyToMany
+    @Transient
     private Set<Personage> personages;
     
 //    by position or ManyToMany?
+    @Transient
     private Set<Movie> movies;
 
     public Person() {

@@ -8,6 +8,10 @@ import ncec.cfweb.Movie;
  *
  * @author DantalioNxxi
  */
+
+// service      : operation
+// MovieService : create
+// ServiceX     : get data external_source, then ....
 public interface MovieService {
     
     Movie addMovie(Movie movie);
@@ -20,7 +24,7 @@ public interface MovieService {
     
     List<Movie> getByName(String name);
     
-    Movie getById(Integer id);
+    Movie getById(Long id);
     
     Movie editMovie(Movie movie);//or by String name?
     
