@@ -4,13 +4,51 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
     <body>
-        <div>TODO write content</div>
+        
+        <table border="1" th:object="${movie}">
+            <thead>
+                <tr>
+                    <th th:text="*{title}"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Продолжительность</td>
+                    <td th:text="${duration}"></td>
+                </tr>
+                <tr>
+                    <td>Дата выхода</td>
+                    <td th:text="${releasedate}"></td>
+                </tr>
+                <tr>
+                    <td>Режиссёр</td>
+                    <td th:text="${directorname}"></td>
+                </tr>
+            </tbody>
+        </table>
     </body>
 </html>
+
+<!--        <table border="1">
+            <thead>
+            <tr>
+                <th>Title</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="movie : ${movies}">
+                <td>
+                    <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>-->
+
+<!--for export-->

@@ -4,8 +4,10 @@ package ncec.cfweb;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +18,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 /**
  *
@@ -26,28 +33,40 @@ public class Movie {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "MOVIE_ID")
     private Long id;
     
     private String title;
-    private Date date;
+    @Temporal(TemporalType.DATE) //????????????
+    private Date dateCreation;
     private int duration;
     private String description;//????how to set it????
     
-    //in generally, is it need?
-    @ManyToOne(optional = true, cascade = CascadeType.ALL) // must be : optional = false
+    @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL) // must be : optional = false
+//    @JoinColumn(name = "CREATOR_ID")
     private User creator;
     
-    @OneToMany(targetEntity = Genre.class)
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = Genre.class)
     private Set<Genre> genres;
     
-//    private HashMap<String, Person> actors;
-    @ManyToMany //??????????
-    private Set<Person> actors;
+//    private HashMap<String, Person> persons;
+    @Transient
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //mappedBy = "movies"
+    @JoinTable(name = "MOVIE_ACTORS",
+            joinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id")
+    )
+    private Set<Person> persons;
     
-    @ManyToMany//at future
-    private Set<Person> personages;
+    @Transient
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "MOVIE_PERSONAGES",
+            joinColumns = @JoinColumn(name = "MOVIE_ID"), //, referencedColumnName = "id"
+            inverseJoinColumns = @JoinColumn(name = "FILMROLE_ID", referencedColumnName = "id")
+    )
+    private Set<Filmrole> personages;
     
-    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER) //каскадность пока убрал...
     private Person director;
     
 //    @OneToMany//or print in DB-field
@@ -59,7 +78,7 @@ public class Movie {
     
     public Movie(String title, Date date, int duration) {
         this.title = title;
-        this.date = date;
+        this.dateCreation = date;
         this.duration = duration;
     }
 
@@ -88,12 +107,12 @@ public class Movie {
     }
     
 
-    public Date getDate() {
-        return date;
+    public Date getDateCreation() {
+        return dateCreation;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDateCreation(Date dateCreation) {
+        this.dateCreation = dateCreation;
     }
 
     public int getDuration() {
@@ -111,6 +130,55 @@ public class Movie {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Person getDirector() {
+        return director;
+    }
+
+    public void setDirector(Person director) {
+        this.director = director;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.id);
+        hash = 19 * hash + Objects.hashCode(this.title);
+        hash = 19 * hash + Objects.hashCode(this.dateCreation);
+        hash = 19 * hash + this.duration;
+        hash = 19 * hash + Objects.hashCode(this.description);
+        hash = 19 * hash + Objects.hashCode(this.creator);
+        hash = 19 * hash + Objects.hashCode(this.genres);
+        hash = 19 * hash + Objects.hashCode(this.persons);
+        hash = 19 * hash + Objects.hashCode(this.personages);
+        hash = 19 * hash + Objects.hashCode(this.director);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Movie other = (Movie) obj;
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.dateCreation, other.dateCreation)) {
+            return false;
+        }
+        if (!Objects.equals(this.director, other.director)) {
+            return false;
+        }
+        return true;
+    }
+    
     
     
 }

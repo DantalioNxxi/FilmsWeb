@@ -11,6 +11,12 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <div>Фильмов с таким именем не найдено</div>
+        <form action="#" th:action="@{/search-movie-page}" method="get">
+            <p>
+                <button th:href="@{/create-new-film}">Create new film</button>
+                <button th:href="@{/index}">Main Page</button>
+            </p>
+        </form>
     </body>
 </html>

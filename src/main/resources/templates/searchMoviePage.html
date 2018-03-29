@@ -11,6 +11,11 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>TODO write content</div>
+        <h1>Search Movie</h1>
+        <form action="#" th:action="@{/search-movie-page}" method="post">
+            <p>Name of film <input type="text" th:field="*{movieName}" /></p>
+            <p><input type="submit" value="Search" /> <input type="reset" value="Reset" /></p>
+        </form>
+        
     </body>
 </html>

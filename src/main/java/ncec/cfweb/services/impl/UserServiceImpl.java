@@ -1,7 +1,6 @@
 package ncec.cfweb.services.impl;
 
 import java.util.List;
-import ncec.cfweb.Movie;
 import ncec.cfweb.User;
 import ncec.cfweb.repositories.UserRepository;
 import ncec.cfweb.services.UserService;
@@ -31,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByLogin(String login) {
-        return userRepository.getByLogin(login);
+        return userRepository.findByLogin(login);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public List<User> getByFirstAndLastName(String firstname, String lastname) {
-        return userRepository.getByFirstAndLastName(firstname, lastname);
+        return userRepository.findByFirstnameAndLastname(firstname, lastname);
     }
 
     @Override

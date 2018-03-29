@@ -14,16 +14,16 @@ and open the template in the editor.
 
         <table border="1">
             <thead>
-            <tr>
-                <th>Title</th>
-            </tr>
+                <tr>
+                    <th>All Movies</th>
+                </tr>
             </thead>
             <tbody>
-            <tr th:each="movie : ${movies}">
-                <td>
-                    <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
-                </td>
-            </tr>
+                <tr th:each="movie : ${movies}">
+                    <td>
+                        <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                    </td>
+                </tr>
             </tbody>
         </table>
 

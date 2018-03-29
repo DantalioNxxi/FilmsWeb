@@ -18,8 +18,6 @@ public interface MovieService {
     
     Movie addMovie(String title, Date date, int duration, String description);
     
-    Movie createMovie();//обращение к стороннему сервису?
-    
     void delete(String name);
     
     List<Movie> getByName(String name);
@@ -30,7 +28,7 @@ public interface MovieService {
     
     List<Movie> getAll();
     
-    
+    String exportAllMovies(List<Movie> movies);
     
     
     
