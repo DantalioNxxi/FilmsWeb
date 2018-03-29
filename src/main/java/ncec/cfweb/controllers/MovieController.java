@@ -28,15 +28,19 @@ public class MovieController {
     MovieService movieService;
 
     @GetMapping(value = "/movieInfo/{movieId}")
-    ModelAndView movieInfo(@PathVariable(value = "movieId") Long movieId){
+    String movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
         Movie movie = movieService.getById(movieId);
-        return new ModelAndView("movieInfo", "movie", movie);
+        model.addAttribute("movie", movie);
+        model.addAttribute("duration", movie.getDuration());
+        model.addAttribute("releasedate", movie.getDateCreation());
+        model.addAttribute("directorname", "default");
+        return "movieInfo";
+//        return new ModelAndView("movieInfo", "movie", movie, );
     }
 
     @GetMapping(value = "/search-movie-page")
-    @ResponseBody
     String searchMoviePage(){
-        return "hello world";
+        return "searchMoviePage";
     }
 
     @PostMapping(value = "/search-movie-page")
@@ -53,8 +57,7 @@ public class MovieController {
     }
 
     @RequestMapping(value = "/search-movie-fail-page", method = RequestMethod.GET)
-    @ResponseBody
-    String searchMovieFailPage(Model model){
+    String searchMovieFailPage(){
         return "searchMovieFailPage";
     }
 
@@ -80,5 +83,24 @@ public class MovieController {
 
     //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
 
+    @PostMapping(value = "/edit-movie-page")
+    ModelAndView editMovie(
+            @RequestParam(value="movieName") String movieName,
+            @RequestParam(value="date") Date date, // special form for to fit a date????
+            @RequestParam(value="duration") Integer duration,
+            @RequestParam(value="description") String description){
+        //check by parse for movieName, date, duration and description
+        Movie movie = movieService.addMovie(movieName, date, duration, description);
+//        model.addAttribute("movie", movie);
+        return new ModelAndView("movieInfo", "movie", movie);
+    }
     //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
+    
+    @PostMapping(value = "/movieInfo{movieId}")
+    ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
+            @RequestParam(value="movieName") String movieName){
+        //check by parse for movieName
+        Movie movie = movieService.getById(movieId);        //where is the checking must being?
+        return new ModelAndView("movieInfo", "movie", movie);
+    }
 }

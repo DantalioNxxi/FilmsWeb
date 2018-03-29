@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Search Movie</h1>
+        <form action="#" th:action="@{/movieInfo{*{movieId}}}" method="post">
+            <p>Name of film <input type="text" th:field="*{movieName}" /></p>
+            
+            <table border="1" th:object="${movie}">
+                <thead>
+                    <tr>
+                        <th th:text="*{title}"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Продолжительность</td>
+                        <td th:text="${duration}"></td>
+                        <td> <input type="numer" value="One" th:value="'Two'"/></td>
+                    </tr>
+                    <tr>
+                        <td>Дата выхода</td>
+                        <td th:text="${releasedate}"></td>
+                    </tr>
+                    <tr>
+                        <td>Режиссёр</td>
+                        <td th:text="${directorname}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><input type="submit" value="Confirm" />
+                <input type="reset" value="Reset" />
+            </p>
+        </form>
+        
+    </body>
+</html>
+
+
+<form action="#" th:action="@{/sum}" th:object="${objectToFill}" method="post">
+    <p>First Field: <input type="number" th:field="*{first}" /></p>
+    <p>Second Field: <input type="number" th:field="*{second}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>

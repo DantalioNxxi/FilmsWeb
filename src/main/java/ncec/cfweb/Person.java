@@ -3,11 +3,16 @@ package ncec.cfweb;
 
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
@@ -21,23 +26,32 @@ public class Person {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    
     private String firstname;
     private String lastname;
     private int age;
     private Gender gender;
 
-    @Transient
+//    @Transient    why?
     EnumSet<Position> career;//under the question
+    
+    @Transient
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}) //mappedBy = "actors"
+    @JoinTable(name = "PERSON_FILMROLES",
+            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id")
+    )
+    private Set<Filmrole> personages;
     
 //    HashMap<String, EnumSet<Position>> films;
 //    Set<Movie> films;
-    
-//    ManyToMany
-    @Transient
-    private Set<Personage> personages;
-    
 //    by position or ManyToMany?
     @Transient
+    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "persons"
+    @JoinTable(name = "PERSON_MOVIES",
+            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id")
+    )
     private Set<Movie> movies;
 
     public Person() {
@@ -58,6 +72,91 @@ public class Person {
 //    public void addRole(Position role){
 //        career.add(role);
 //    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.id);
+        hash = 47 * hash + Objects.hashCode(this.firstname);
+        hash = 47 * hash + Objects.hashCode(this.lastname);
+        hash = 47 * hash + this.age;
+        hash = 47 * hash + Objects.hashCode(this.gender);
+        hash = 47 * hash + Objects.hashCode(this.career);
+        hash = 47 * hash + Objects.hashCode(this.personages);
+        hash = 47 * hash + Objects.hashCode(this.movies);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Person other = (Person) obj;
+        if (this.age != other.age) {
+            return false;
+        }
+        if (!Objects.equals(this.firstname, other.firstname)) {
+            return false;
+        }
+        if (!Objects.equals(this.lastname, other.lastname)) {
+            return false;
+        }
+        if (this.gender != other.gender) {
+            return false;
+        }
+        if (!Objects.equals(this.career, other.career)) {
+            return false;
+        }
+        return true;
+    }
+    
     
     
 }

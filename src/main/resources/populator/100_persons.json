@@ -1,0 +1,14 @@
+[
+  {
+    "_class": "ncec.cfweb.Person",
+    "firstname": "Francis",
+    "lastname": "Coppola",
+    "age": "78"
+  },
+  {
+    "_class": "ncec.cfweb.Person",
+    "firstname": "Alfredo",
+    "lastname": "Pacino"
+    "age": "77"
+  }
+]

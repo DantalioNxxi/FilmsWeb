@@ -76,6 +76,13 @@
             <!--<version>1.4.196</version>-->
         </dependency>
         
+        <!--OpenCSV. For export and import-->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.1</version>
+        </dependency>
+        
     </dependencies>
     
     
