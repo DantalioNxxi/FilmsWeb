@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -91,13 +90,17 @@ public class MovieController {
 
     // VYZH: todo: one method with GET mapping to accept form submission
     @PostMapping(value = "/edit-movie-page")
-    ModelAndView editMovie(
-            @RequestParam(value="movieName") String movieName,
-            @RequestParam(value="date") Date date, // special form for to fit a date????
-            @RequestParam(value="duration") Integer duration,
-            @RequestParam(value="description") String description){
+    ModelAndView postEditMovie(
+            @RequestParam(value="title") String movieName,
+//            @RequestParam(value="date") Date date, // special form for to fit a date????
+//            @RequestParam(value="duration") Integer duration,
+//            @RequestParam(value="description") String description,
+            @RequestParam(value="director_firstname") String directorFirstname,
+            @RequestParam(value="director_lastname") String directorLastname
+    ){
         //check by parse for movieName, date, duration and description
-        Movie movie = movieService.addMovie(movieName, date, duration, description);
+        Movie movie = movieService.editMovie(movieName, null, 0, "",
+                directorFirstname, directorLastname);
 //        model.addAttribute("movie", movie);
         return new ModelAndView("movieInfo", "movie", movie);
     }

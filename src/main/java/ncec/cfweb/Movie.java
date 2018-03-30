@@ -68,8 +68,8 @@ public class Movie {
 //            inverseJoinColumns = @JoinColumn(name = "FILMROLE_ID", referencedColumnName = "id")
 //    )
     private Set<Filmrole> personages;
-    
-    @ManyToOne(optional = true, fetch = FetchType.EAGER) //каскадность пока убрал...
+
+    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {}) //каскадность пока убрал...
     private Person director;
     
 //    @OneToMany//or print in DB-field

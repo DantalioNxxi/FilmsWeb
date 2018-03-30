@@ -1,19 +1,24 @@
 
 package ncec.cfweb;
 
+import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -55,10 +60,16 @@ public class Person {
 
     @Id
     private String firstname;
+
+    @Id
     private String lastname;
+
     private int age;
+
+    @Transient
     private Gender gender;
 
+    @Transient
 //    @Transient    why?
     EnumSet<Position> career;//under the question
     
@@ -143,7 +154,7 @@ public class Person {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 47 * hash + Objects.hashCode(this.id);
+//        hash = 47 * hash + Objects.hashCode(this.id);
         hash = 47 * hash + Objects.hashCode(this.firstname);
         hash = 47 * hash + Objects.hashCode(this.lastname);
         hash = 47 * hash + this.age;

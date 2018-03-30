@@ -8,7 +8,7 @@
   {
     "_class": "ncec.cfweb.Person",
     "firstname": "Alfredo",
-    "lastname": "Pacino"
+    "lastname": "Pacino",
     "age": "77"
   }
 ]
