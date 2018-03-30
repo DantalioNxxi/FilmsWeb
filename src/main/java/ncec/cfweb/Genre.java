@@ -16,6 +16,7 @@ public class Genre {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
+
     private String name;//must be is unique
     
     static{//how to...

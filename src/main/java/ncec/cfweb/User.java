@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  *
@@ -26,12 +27,14 @@ public class User {
     private String lastname;
     
     private String login;
-    
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
+
+    @Transient
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
     private Set<Catalog> catalogs;  //Is Need???
-    
+
+    @Transient
     //Is Need???
-    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+//    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     private Set<Movie> movies;
     
     //wroten constructors

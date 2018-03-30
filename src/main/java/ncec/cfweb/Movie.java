@@ -37,9 +37,12 @@ public class Movie {
     private Long id;
     
     private String title;
+
     @Temporal(TemporalType.DATE) //????????????
     private Date dateCreation;
+
     private int duration;
+
     private String description;//????how to set it????
     
     @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL) // must be : optional = false
@@ -51,19 +54,19 @@ public class Movie {
     
 //    private HashMap<String, Person> persons;
     @Transient
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //mappedBy = "movies"
-    @JoinTable(name = "MOVIE_ACTORS",
-            joinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id")
-    )
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //mappedBy = "movies"
+//    @JoinTable(name = "MOVIE_ACTORS",
+//            joinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id")
+//    )
     private Set<Person> persons;
     
     @Transient
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "MOVIE_PERSONAGES",
-            joinColumns = @JoinColumn(name = "MOVIE_ID"), //, referencedColumnName = "id"
-            inverseJoinColumns = @JoinColumn(name = "FILMROLE_ID", referencedColumnName = "id")
-    )
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "MOVIE_PERSONAGES",
+//            joinColumns = @JoinColumn(name = "MOVIE_ID"), //, referencedColumnName = "id"
+//            inverseJoinColumns = @JoinColumn(name = "FILMROLE_ID", referencedColumnName = "id")
+//    )
     private Set<Filmrole> personages;
     
     @ManyToOne(optional = true, fetch = FetchType.EAGER) //каскадность пока убрал...

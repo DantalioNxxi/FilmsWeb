@@ -86,8 +86,8 @@ public class MovieServiceImpl implements MovieService{
         str[0] = Long.toString(movie.getId());
         str[1] = movie.getTitle();
         str[2] = Integer.toString(movie.getDuration());
-        str[3] = movie.getDirector().getFirstname();
-        str[4] = movie.getDirector().getLastname();
+        str[3] = movie.getDirector().getFirstname(); // VYZH: todo: NPE
+        str[4] = movie.getDirector().getLastname(); // VYZH: todo: NPE
         return str;
     }
     

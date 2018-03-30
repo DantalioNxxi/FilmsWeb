@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  *
@@ -30,12 +31,14 @@ public class Catalog {
     private Long catalogId;
     
     private String name;
-    
+
+    @Transient
     //in generally, is it need? then optional i TRUE??????
-    @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL)
+//    @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL)
     private User creator;
-    
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = Movie.class)
+
+    @Transient
+//    @OneToMany(fetch = FetchType.EAGER, targetEntity = Movie.class)
     Set<Movie> films;//!!!!!!!! do methods do not need more?
     //or simply set?
 //    HashMap<String, Movie> films;

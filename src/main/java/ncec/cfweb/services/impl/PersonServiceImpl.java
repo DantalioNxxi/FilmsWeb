@@ -32,7 +32,8 @@ public class PersonServiceImpl implements PersonService{
     //find or get???
     @Override
     public Person getById(Long id) {
-        return personRepository.findById(id);
+        throw new UnsupportedOperationException();
+//        return personRepository.findById(id);
     }
 
     @Override
