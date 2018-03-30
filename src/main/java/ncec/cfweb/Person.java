@@ -21,12 +21,39 @@ import javax.persistence.Transient;
  * @author DantalioNxxi
  */
 @Entity
+@IdClass(Person.PersonPk.class)
 public class Person {
+
+    public static class PersonPk implements Serializable {
+
+        @Id
+        String firstname;
+
+        @Id
+        String lastname;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            PersonPk personPk = (PersonPk) o;
+            return Objects.equals(firstname, personPk.firstname) &&
+                    Objects.equals(lastname, personPk.lastname);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(firstname, lastname);
+        }
+    }
     
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+//    @Id
+//    @Column
+//    @GeneratedValue(strategy=GenerationType.AUTO)
+    @Transient
     private Long id;
-    
+
+    @Id
     private String firstname;
     private String lastname;
     private int age;
@@ -36,22 +63,22 @@ public class Person {
     EnumSet<Position> career;//under the question
     
     @Transient
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}) //mappedBy = "actors"
-    @JoinTable(name = "PERSON_FILMROLES",
-            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id")
-    )
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}) //mappedBy = "actors"
+//    @JoinTable(name = "PERSON_FILMROLES",
+//            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id")
+//    )
     private Set<Filmrole> personages;
     
 //    HashMap<String, EnumSet<Position>> films;
 //    Set<Movie> films;
 //    by position or ManyToMany?
     @Transient
-    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "persons"
-    @JoinTable(name = "PERSON_MOVIES",
-            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id")
-    )
+//    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "persons"
+//    @JoinTable(name = "PERSON_MOVIES",
+//            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id")
+//    )
     private Set<Movie> movies;
 
     public Person() {

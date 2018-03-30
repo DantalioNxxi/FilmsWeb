@@ -31,8 +31,8 @@ public class MovieController {
     String movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
         Movie movie = movieService.getById(movieId);
         model.addAttribute("movie", movie);
-        model.addAttribute("duration", movie.getDuration());
-        model.addAttribute("releasedate", movie.getDateCreation());
+        model.addAttribute("duration", movie.getDuration()); // VYZH: todo: bad practice
+        model.addAttribute("releasedate", movie.getDateCreation()); // VYZH: todo: bad practice
         model.addAttribute("directorname", "default");
         return "movieInfo";
 //        return new ModelAndView("movieInfo", "movie", movie, );
@@ -83,6 +83,13 @@ public class MovieController {
 
     //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
 
+    // VYZH: todo: one method with GET mapping to draw the form
+    @GetMapping(value = "/edit-movie-page")
+    ModelAndView getEditMovie(@RequestParam Long id) {
+        return new ModelAndView("editMoviePage", "movie", movieService.getById(id));
+    }
+
+    // VYZH: todo: one method with GET mapping to accept form submission
     @PostMapping(value = "/edit-movie-page")
     ModelAndView editMovie(
             @RequestParam(value="movieName") String movieName,
