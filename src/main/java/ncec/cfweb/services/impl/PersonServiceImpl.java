@@ -26,7 +26,8 @@ public class PersonServiceImpl implements PersonService{
 
     @Override
     public void deleteById(Long id) {
-        personRepository.delete(id);
+        throw new UnsupportedOperationException();
+//        personRepository.deleteById(id);
     }
     
     //find or get???
@@ -52,5 +53,4 @@ public class PersonServiceImpl implements PersonService{
     public List<Person> getAll() {
         return (List<Person>)personRepository.findAll();
     }
-    
 }

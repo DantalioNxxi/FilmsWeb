@@ -29,7 +29,8 @@ public interface MovieService {
     List<Movie> getAll();
     
     String exportAllMovies(List<Movie> movies);
-    
-    
-    
+
+
+    Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname);
+
 }

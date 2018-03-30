@@ -32,7 +32,7 @@ public class MainController {
     @PostMapping(value = "/export-allmovies")
     String exportAllMovies(Model model){
         //check by parse for movieName
-        List<Movie> movies = movieService.getAll();
+        List<Movie> movies = movieService.getAll(); // VYZH: todo: not all but selected entities
         //where is the checking must being?
         if (movies.isEmpty()){
             return "redirect:/export-allmovies/fail-page";
@@ -43,7 +43,11 @@ public class MainController {
             return "successExportAllmovies";
         }
     }
-    
+
+    // VYZH: todo: move to MovieController
+    // VYZH: todo: implement file download in the browser
+    // https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-return-types
+    // ResponseEntity + StreamingResponseBody
     @GetMapping(value = "/export-allmovies/fail-page")
     @ResponseBody
     String exportFailPage(){
