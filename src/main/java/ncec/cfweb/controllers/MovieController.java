@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -31,8 +30,8 @@ public class MovieController {
     String movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
         Movie movie = movieService.getById(movieId);
         model.addAttribute("movie", movie);
-        model.addAttribute("duration", movie.getDuration());
-        model.addAttribute("releasedate", movie.getDateCreation());
+        model.addAttribute("duration", movie.getDuration()); // VYZH: todo: bad practice
+        model.addAttribute("releasedate", movie.getDateCreation()); // VYZH: todo: bad practice
         model.addAttribute("directorname", "default");
         return "movieInfo";
 //        return new ModelAndView("movieInfo", "movie", movie, );
@@ -83,14 +82,25 @@ public class MovieController {
 
     //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
 
+    // VYZH: todo: one method with GET mapping to draw the form
+    @GetMapping(value = "/edit-movie-page")
+    ModelAndView getEditMovie(@RequestParam Long id) {
+        return new ModelAndView("editMoviePage", "movie", movieService.getById(id));
+    }
+
+    // VYZH: todo: one method with GET mapping to accept form submission
     @PostMapping(value = "/edit-movie-page")
-    ModelAndView editMovie(
-            @RequestParam(value="movieName") String movieName,
-            @RequestParam(value="date") Date date, // special form for to fit a date????
-            @RequestParam(value="duration") Integer duration,
-            @RequestParam(value="description") String description){
+    ModelAndView postEditMovie(
+            @RequestParam(value="title") String movieName,
+//            @RequestParam(value="date") Date date, // special form for to fit a date????
+//            @RequestParam(value="duration") Integer duration,
+//            @RequestParam(value="description") String description,
+            @RequestParam(value="director_firstname") String directorFirstname,
+            @RequestParam(value="director_lastname") String directorLastname
+    ){
         //check by parse for movieName, date, duration and description
-        Movie movie = movieService.addMovie(movieName, date, duration, description);
+        Movie movie = movieService.editMovie(movieName, null, 0, "",
+                directorFirstname, directorLastname);
 //        model.addAttribute("movie", movie);
         return new ModelAndView("movieInfo", "movie", movie);
     }

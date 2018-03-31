@@ -25,15 +25,15 @@ public class Filmrole {
     private String fullname;
     
     @Transient
-    @ManyToMany(mappedBy = "creator", fetch = FetchType.EAGER)//columns
+//    @ManyToMany(mappedBy = "creator", fetch = FetchType.EAGER)//columns
     private Set<Movie> movies;
     
     @Transient
-    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "personages"
-    @JoinTable(name = "PERSONAGE_ACTORS",
-            joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "ACTOR_ID", referencedColumnName = "id")
-    )
+//    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "personages"
+//    @JoinTable(name = "PERSONAGE_ACTORS",
+//            joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "ACTOR_ID", referencedColumnName = "id")
+//    )
     private Set<Movie> actors;
     
     public Filmrole() {

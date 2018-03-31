@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
  * @author DantalioNxxi
  */
 @Repository
-public interface PersonRepository extends CrudRepository<Person, Long>{
+public interface PersonRepository extends CrudRepository<Person, Person.PersonPk>{
+
+//    void deleteById(Long id);
 
     List<Person> findByFirstnameAndLastname(String firstname, String lastname);
 
-    Person findById(Long id);
+//    Person findById(Long id);
 }

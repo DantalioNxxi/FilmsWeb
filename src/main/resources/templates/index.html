@@ -6,14 +6,52 @@ and open the template in the editor.
 -->
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
         <title>CFWeb</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body>
-        <h1>MAIN PAGE</h1>
-        <form action="#" th:action="@{/export-allmovies}" method="post">
-            <p><input type="submit" value="Export All Films" /></p>
-        </form>
+    <body style="padding-top: 70px;">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Movie Library</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href="/movie/allMovies">Movies</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1>MAIN PAGE</h1>
+            <p>
+                <form action="#" th:action="@{/export-allmovies}" method="post">
+                <p><input type="submit" class="btn btn-success btn-lg" value="Export All Films" /></p>
+                </form>
+            </p>
+        </div>
+
+    </div><!-- /.container -->
+
+
+
+
+
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     </body>
 </html>
