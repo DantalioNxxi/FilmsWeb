@@ -26,6 +26,14 @@ public class PersonController {
     
     @Autowired
     PersonService personService;
+
+    // #1
+//    @GetMapping("/personInfo/{lastname}/{firstname}")
+
+    // #2
+//    @GetMapping("/personInfo") + @RequestParam String lastname, @RequestParam String firstname
+
+
     
     //===========All Persons=====================
     

@@ -30,46 +30,36 @@ and open the template in the editor.
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
                 <li><a href="/movie/allMovies">Movies</a></li>
-                <li class="active"><a href="/person/allPersons">Persons</a></li>
-                <li><a href="/movie/create-person-page">Create Person</a></li>
+                <li><a href="/person/allPersons">Persons</a></li>
+                <li><a href="/movie/create-movie-page">Create Movie</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 
-    <div class="container">
-        <form th:action="@{/movie/search-person-page}" th:object="${personNameForm}" method="post">
-            <p>
-                Search Name of Person <input type="text" th:field="*{personName}" />
-            </p>
-            <p><input type="submit" value="Search" /></p>
-        </form>
-    </div>
-    
 <div class="container">
+    <div class="row">
+        <div class="alert alert-success" role="alert">
+            <b>Done:</b> Movies successfully imported from IMDb!
+        </div>
+    </div>
 
     <div class="row">
         <table class="table table-striped table-hover">
             <thead>
-                <tr>
-                    <th>Persons</th>
-                </tr>
+            <tr>
+                <th>Movies</th>
+            </tr>
             </thead>
             <tbody>
-                <tr th:each="person : ${persons}">
+            <tr th:each="movie : ${movies}">
                 <td>
-
-                <a th:href="@{/person/personInfo(lastname=${person.lastname}, firstname=${person.firstname})}"
-                   th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
-
-               // <a th:href="@{/person/personInfo/{personId}(personId=${person.id})}" th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
-
+                    <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                 </td>
-                </tr>
+            </tr>
             </tbody>
         </table>
     </div>
-
 </div><!-- /.container -->
 
 

@@ -3,14 +3,21 @@ package ncec.cfweb.controllers;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
+
+import com.opencsv.CSVWriter;
 import ncec.cfweb.Movie;
 import ncec.cfweb.MovieForm;
 import ncec.cfweb.MovieNameForm;
 import ncec.cfweb.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
  *
@@ -58,6 +66,7 @@ public class MovieController {
         List<Movie> movies = movieService.getByName(mName); // в будущем расширенный поиск и критерии
         //where is the checking must being?
         if (movies.isEmpty()){
+            model.addAttribute("movieName", mName);
             return "searchMovieFailPage";
         } else{
             model.addAttribute("movies", movies);
@@ -171,15 +180,31 @@ public class MovieController {
         return new ModelAndView("movieInfo", "movie", movie);
     }
     //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
-    
-    
-    
+
+  
     @PostMapping(value = "/movieInfo{movieId}")
     ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
             @RequestParam(value="movieName") String movieName){
         //check by parse for movieName
         Movie movie = movieService.getById(movieId);        //where is the checking must being?
         return new ModelAndView("movieInfo", "movie", movie);
+    }
+
+    //============Export============= 
+
+    @PostMapping("/export-allmovies")
+    public ResponseEntity<StreamingResponseBody> exportAllMovies(@RequestParam List<Long> movieIds){
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"movies.csv\"")
+                .body(out -> movieService.exportMovies(movieIds, out));
+    }
+    
+    //============Import=============
+
+    @PostMapping("/import-movie")
+    ModelAndView importPage(@RequestParam String movieName){
+        List<Movie> movies = movieService.importMovie(movieName);
+        return new ModelAndView("import/result", "movies", movies);
     }
     
     

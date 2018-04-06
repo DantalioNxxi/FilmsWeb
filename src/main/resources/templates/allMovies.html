@@ -47,8 +47,15 @@ and open the template in the editor.
     </div>
     
 <div class="container">
-
     <div class="row">
+
+        <form th:action="@{/movie/search-movie-page}" th:object="${movieNameForm}" method="post">
+            <p>
+                Search movie <input type="text" th:field="*{movieName}" />
+            </p>
+            <p><input type="submit" value="Search" /></p>
+        </form>
+
         <table class="table table-striped table-hover">
             <thead>
             <tr>
@@ -78,8 +85,37 @@ and open the template in the editor.
             <p><input type="submit" class="btn btn-success btn-lg" value="Export All Films" /></p>
             </form>
         </p>-->
+  
     </div>
 
+
+    <form th:action="@{/movie/export-allmovies}" method="post">
+        <div class="row">
+            <input type="submit" class="btn btn-success btn-lg" value="Export Films" />
+        </div>
+
+        <div class="row">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th style="width: 50px;">#</th>
+                    <th>Movies</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="movie : ${movies}">
+                    <td>
+                        <input type="checkbox" name="movieIds" th:value="${movie.id}" />
+                    </td>
+                    <td>
+                        <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </form>
 </div><!-- /.container -->
 
 
