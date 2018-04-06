@@ -31,8 +31,10 @@ public interface MovieService {
     Movie editMovie(Movie movie);//or by String name?
     
     List<Movie> getAll();
+  
 
     void exportMovies(List<Long> movieIds, OutputStream out) throws IOException;
+
 
     File exportAllMovies(List<Movie> movies);
 //    String exportAllMovies(List<Movie> movies);

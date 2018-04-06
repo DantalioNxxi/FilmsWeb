@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.util.Date;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
@@ -179,6 +181,7 @@ public class MovieController {
     }
     //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
 
+  
     @PostMapping(value = "/movieInfo{movieId}")
     ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
             @RequestParam(value="movieName") String movieName){
@@ -203,4 +206,110 @@ public class MovieController {
         List<Movie> movies = movieService.importMovie(movieName);
         return new ModelAndView("import/result", "movies", movies);
     }
+    
+    
+    
+    
+    
+    //============Export============= 
+    
+    
+    
+    
+    @PostMapping(value = "/export-allmovies")
+    public @ResponseBody String exportAllMovies(Model model, @RequestParam("file") MultipartFile file){
+        //check by parse for movieName
+        List<Movie> movies = movieService.getAll();
+        //temporary all...
+        //where is the checking must being?
+        if (movies.isEmpty()){
+            return "redirect:/export-fail-page";
+        } else if (!file.isEmpty()){
+            
+            try {
+//                byte[] bytes = file.getBytes();
+                File f1 = movieService.exportAllMovies(movies);
+                byte[] bytes = Files.readAllBytes(f1.toPath());
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(f1));
+                stream.write(bytes);
+                stream.close();
+                
+//                String pathToCSV = movieService.exportAllMovies(movies);
+                model.addAttribute("countMovies", Integer.toString(movies.size()));
+                model.addAttribute("pathToCSV", "/movie.csv");
+                return "successExportAllmovies";
+                
+//                return "Вы удачно загрузили!";
+            } catch (Exception e) {
+                return "Вам не удалось загрузить файл";
+            }
+            
+        }
+        return "Вам не удалось загрузить, потому что файл пустой.";
+    }
+    @RequestMapping(value="/upload", method=RequestMethod.POST)
+    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
+            @RequestParam("file") MultipartFile file){
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File(name + "-uploaded")));
+                stream.write(bytes);
+                stream.close();
+                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
+            } catch (Exception e) {
+                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+            }
+        } else {
+            return "Вам не удалось загрузить " + name + " потому что файл пустой.";
+        }
+    }
+//    @PostMapping(value = "/export-allmovies")
+//    String exportAllMovies(Model model){
+//        //check by parse for movieName
+//        List<Movie> movies = movieService.getAll(); // VYZH: todo: not all but selected entities
+//        //temporary all...
+//        //where is the checking must being?
+//        if (movies.isEmpty()){
+//            return "redirect:/export-allmovies/fail-page";
+//        } else{
+//            String pathToCSV = movieService.exportAllMovies(movies);
+//            model.addAttribute("countMovies", Integer.toString(movies.size()));
+//            model.addAttribute("pathToCSV", pathToCSV);
+//            return "successExportAllmovies";
+//        }
+//    }
+
+    // VYZH: todo: move to MovieController
+    // VYZH: todo: implement file download in the browser
+    // https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-return-types
+    // ResponseEntity + StreamingResponseBody
+    @GetMapping(value = "/export-allmovies/fail-page")
+    @ResponseBody
+    String exportFailPage(){
+        return "There are nothing for to export.";
+    }
+    
+    
+    
+    
+        //============Import=============
+
+    
+    @GetMapping(value = "/import-movie")
+    @ResponseBody
+    String importPage(){
+        return "It is not realized else!";
+    }
+    
+//    @GetMapping(value = "/export-allmovies/success-page")
+//    @ResponseBody
+//    String exportSuccessPage(){
+//        return "There are nothing for to export.";
+//    }
+    //at future - button to create/add new film
+    
+    //
 }

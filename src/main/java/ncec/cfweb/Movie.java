@@ -61,12 +61,15 @@ public class Movie {
     private Set<Genre> genres;
     
 //    private HashMap<String, Person> persons;
-    @Transient
+//    @Transient
 //    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //mappedBy = "movies"
+//    @ManyToMany(mappedBy = "movies")
+    
 //    @JoinTable(name = "MOVIE_ACTORS",
 //            joinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id")
 //    )
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) //Movie - is owner
     private Set<Person> persons;
     
     @Transient

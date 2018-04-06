@@ -11,10 +11,12 @@ and open the template in the editor.
         <title>TODO supply a title</title>
     </head>
     <body>
-        <div>TODO write content</div>
+        <div>Ошибка: [[${message}]]</div>
+        <form action="#" th:action="@{/create-movie-page}" method="get">
+            <p>
+                <button th:href="@{/create-movie-page}">Create new film</button>
+                <button th:href="@{/index}">Main Page</button>
+            </p>
+        </form>
     </body>
-    
-    <!--Здесь будет Export-->
-    
-    
 </html>

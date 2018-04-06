@@ -81,12 +81,14 @@ public class Person {
 //    HashMap<String, EnumSet<Position>> films;
 //    Set<Movie> films;
 //    by position or ManyToMany?
-    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "persons"
+    
+//    @Transient
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) //mappedBy = "persons"
 //    @JoinTable(name = "PERSON_MOVIES",
 //            joinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id"),
 //            inverseJoinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id")
 //    )
+    @ManyToMany(mappedBy = "persons")
     private Set<Movie> movies;
 
     public Person() {

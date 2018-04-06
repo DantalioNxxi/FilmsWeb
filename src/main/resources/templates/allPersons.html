@@ -58,8 +58,12 @@ and open the template in the editor.
             <tbody>
                 <tr th:each="person : ${persons}">
                 <td>
+
                 <a th:href="@{/person/personInfo(lastname=${person.lastname}, firstname=${person.firstname})}"
                    th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
+
+               // <a th:href="@{/person/personInfo/{personId}(personId=${person.id})}" th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
+
                 </td>
                 </tr>
             </tbody>
