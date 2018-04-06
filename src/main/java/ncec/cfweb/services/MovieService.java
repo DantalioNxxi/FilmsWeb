@@ -1,5 +1,6 @@
 package ncec.cfweb.services;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import ncec.cfweb.Movie;
@@ -28,7 +29,8 @@ public interface MovieService {
     
     List<Movie> getAll();
     
-    String exportAllMovies(List<Movie> movies);
+    File exportAllMovies(List<Movie> movies);
+//    String exportAllMovies(List<Movie> movies);
 
 
     Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname);

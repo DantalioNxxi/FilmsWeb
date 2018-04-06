@@ -11,8 +11,8 @@ and open the template in the editor.
         <title>TODO supply a title</title>
     </head>
     <body>
-        <div>Фильмов с таким именем [[${movieName}]] не найдено</div>
-        <form action="#" th:action="@{/search-movie-page}" method="get">
+        <div>Ошибка: [[${message}]]</div>
+        <form action="#" th:action="@{/create-movie-page}" method="get">
             <p>
                 <button th:href="@{/create-movie-page}">Create new film</button>
                 <button th:href="@{/index}">Main Page</button>

@@ -30,11 +30,22 @@ and open the template in the editor.
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
                 <li class="active"><a href="/movie/allMovies">Movies</a></li>
+                <li><a href="/person/allPersons">Persons</a></li>
+                <li><a href="/movie/create-movie-page">Create Movie</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 
+    <div class="container">
+        <form th:action="@{/movie/search-movie-page}" th:object="${movieNameForm}" method="post">
+            <p>
+                Search movie <input type="text" th:field="*{movieName}" />
+            </p>
+            <p><input type="submit" value="Search" /></p>
+        </form>
+    </div>
+    
 <div class="container">
 
     <div class="row">
@@ -52,6 +63,21 @@ and open the template in the editor.
             </tr>
             </tbody>
         </table>
+        
+        <p>
+            <form action="#" th:action="@{/movie/export-allmovies}" method="post" enctype="multipart/form-data">
+            <p>
+                <input type="submit" class="btn btn-success btn-lg" value="Export All Films" />
+                <br/>
+                <input type="file" name="file" value="File to upload:">
+            </p>
+            </form>
+        </p>
+<!--        <p>
+            <form action="#" th:action="@{/movie/export-allmovies}" method="post">
+            <p><input type="submit" class="btn btn-success btn-lg" value="Export All Films" /></p>
+            </form>
+        </p>-->
     </div>
 
 </div><!-- /.container -->

@@ -26,10 +26,10 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/movie/allMovies">Movies</a></li>
                     <li><a href="/person/allPersons">Persons</a></li>
-                    <li><a href="/movie/create-movie-page">Create Movie</a></li>
+                    <li><a href="/movie/create-person-page">Create Person</a></li>
                     <li class="active">
-                        <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}"
-                            th:text="${movie.title}">{title}</a>
+                        <a th:href="@{/person/personInfo/{personId}(personId=${person.id})}"
+                            th:text="${person.firstname} ${lastname}">{firstname} {lastname}</a>
                     </li>
                 </ul>
             </div><!--/.nav-collapse -->
@@ -41,29 +41,34 @@
 
                 <p>
                     <a class="btn btn-primary"
-                       th:href="@{/movie/edit-movie-page(id = ${movie.id})}" role="button">Edit</a>
+                       th:href="@{/person/edit-person-page(id = ${person.id})}" role="button">Edit</a>
                 </p>
 
-                <table th:object="${movie}" class="table table-striped table-hover">
+                <table th:object="${person}" class="table table-striped table-hover">
                     <thead>
                     <tr>
-                        <th th:text="*{title}"></th>
+                        <th th:text="*{firstname} + *{lastname}"></th>
                         <th></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>Продолжительность</td>
-                        <td th:text="${movie.duration}"></td>
+                        <td>Имя</td>
+                        <td th:text="${firstname}"></td>
                         <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
                     </tr>
                     <tr>
-                        <td>Дата выхода</td>
-                        <td th:text="${releasedate}"></td>
+                        <td>Фамилия</td>
+                        <td th:text="${lastname}"></td>
+                        <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
                     </tr>
                     <tr>
-                        <td>Режиссёр</td>
-                        <td th:text="|${movie?.director?.firstname} ${movie?.director?.lastname}|"></td>
+                        <td>Возраст</td>
+                        <td th:text="${age}"></td>
+                    </tr>
+                    <tr>
+                        <td>Пол</td>
+                        <td th:text="${gender}"></td>
                     </tr>
                     </tbody>
                 </table>

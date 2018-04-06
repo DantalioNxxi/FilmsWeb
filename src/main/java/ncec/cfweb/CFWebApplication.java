@@ -13,8 +13,13 @@ import org.springframework.data.repository.init.Jackson2RepositoryPopulatorFacto
 import org.springframework.data.repository.init.Jackson2ResourceReader;
 import org.springframework.data.repository.init.RepositoryPopulator;
 import org.springframework.data.repository.init.ResourceReaderRepositoryPopulator;
+//import org.springframework.boot.context.embedded.MultipartConfigFactory;
+
 
 import java.io.IOException;
+import javax.servlet.MultipartConfigElement;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  *
@@ -22,6 +27,7 @@ import java.io.IOException;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
+@ComponentScan //new
 @EnableJpaRepositories(basePackages = "ncec.cfweb.repositories")
 @Configuration
 public class CFWebApplication {
@@ -31,6 +37,14 @@ public class CFWebApplication {
         Jackson2RepositoryPopulatorFactoryBean populator = new Jackson2RepositoryPopulatorFactoryBean();
         populator.setResources(resolver.getResources("classpath:/populator/*.json"));
         return populator;
+    }
+    
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize("128KB");
+        factory.setMaxRequestSize("128KB");
+        return factory.createMultipartConfig();
     }
  
     public static void main(String[] args) {

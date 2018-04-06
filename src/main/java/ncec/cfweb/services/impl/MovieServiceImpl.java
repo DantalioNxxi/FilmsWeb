@@ -2,6 +2,7 @@ package ncec.cfweb.services.impl;
 
 import com.opencsv.CSVWriter;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -70,10 +71,10 @@ public class MovieServiceImpl implements MovieService{
 
     // VYZH: todo: 1) return File/Stream/etc -OR- 2) add OutputStream in parameters
     @Override
-    public String exportAllMovies(List<Movie> movies) {
+    public File exportAllMovies(List<Movie> movies) {
         //or export Object items in another service?
         try(CSVWriter writer
-            = new CSVWriter(new BufferedWriter(new FileWriter("movies.csv")))){
+            = new CSVWriter(new BufferedWriter(new FileWriter("/movies.csv")))){
             writer.writeNext(new String[]{"MOVIE_ID", "TITLE", "DURATION",
                 "DIRECTOR_FIRSTNAME", "DIRECTOR_LASTNAME"});
             for (Movie movie : movies) {
@@ -82,9 +83,10 @@ public class MovieServiceImpl implements MovieService{
             }
 //            writer.close();
         } catch (IOException ex) {
+//            return new File("/movies.csv");
             //...later
         }
-        return "movies.csv";
+        return new File("/movies.csv");
     }
 
     @Override
@@ -120,8 +122,10 @@ public class MovieServiceImpl implements MovieService{
         str[0] = Long.toString(movie.getId());
         str[1] = movie.getTitle();
         str[2] = Integer.toString(movie.getDuration());
-        str[3] = movie.getDirector().getFirstname(); // VYZH: todo: NPE
-        str[4] = movie.getDirector().getLastname(); // VYZH: todo: NPE
+        str[3] = "dirFirstName"; // VYZH: todo: NPE
+        str[4] = "dirLastName"; // VYZH: todo: NPE
+//        str[3] = movie.getDirector().getFirstname(); // VYZH: todo: NPE
+//        str[4] = movie.getDirector().getLastname(); // VYZH: todo: NPE
         return str;
     }
     
