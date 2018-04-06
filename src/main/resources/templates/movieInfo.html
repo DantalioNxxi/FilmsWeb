@@ -51,6 +51,10 @@
                     </thead>
                     <tbody>
                     <tr>
+                        <td>Описание</td>
+                        <td th:text="${movie.description}"></td>
+                    </tr>
+                    <tr>
                         <td>Продолжительность</td>
                         <td th:text="${movie.duration}"></td>
                         <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->

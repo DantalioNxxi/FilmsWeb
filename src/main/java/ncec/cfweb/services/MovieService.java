@@ -1,5 +1,9 @@
 package ncec.cfweb.services;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import ncec.cfweb.Movie;
@@ -27,10 +31,16 @@ public interface MovieService {
     Movie editMovie(Movie movie);//or by String name?
     
     List<Movie> getAll();
-    
-    String exportAllMovies(List<Movie> movies);
+
+    void exportMovies(List<Long> movieIds, OutputStream out) throws IOException;
+
+    File exportAllMovies(List<Movie> movies);
+//    String exportAllMovies(List<Movie> movies);
 
 
     Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname);
 
+    List<Movie> getByIds(Collection<Long> movieIds);
+
+    List<Movie> importMovie(String movieName);
 }

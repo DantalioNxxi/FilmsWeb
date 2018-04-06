@@ -31,10 +31,7 @@ public class Person {
 
     public static class PersonPk implements Serializable {
 
-        @Id
         String firstname;
-
-        @Id
         String lastname;
 
         @Override

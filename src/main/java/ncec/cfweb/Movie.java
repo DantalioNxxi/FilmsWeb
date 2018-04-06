@@ -23,19 +23,26 @@ import javax.persistence.JoinTable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author DantalioNxxi
  */
 @Entity
+@XmlType
+@XmlAccessorType(XmlAccessType.NONE)
 public class Movie {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "MOVIE_ID")
     private Long id;
-    
+
+    @XmlElement
     private String title;
 
     @Temporal(TemporalType.DATE) //????????????
@@ -43,6 +50,7 @@ public class Movie {
 
     private int duration;
 
+    @XmlElement
     private String description;//????how to set it????
     
     @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL) // must be : optional = false
@@ -76,7 +84,7 @@ public class Movie {
     @ElementCollection
     private Set<String> countries;
     
-    protected Movie() {
+    public Movie() {
     }
     
     public Movie(String title, Date date, int duration) {

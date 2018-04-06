@@ -22,7 +22,14 @@ public class PersonController {
     
     @Autowired
     PersonService personService;
-    
+
+
+    // #1
+//    @GetMapping("/personInfo/{lastname}/{firstname}")
+
+    // #2
+//    @GetMapping("/personInfo") + @RequestParam String lastname, @RequestParam String firstname
+
     @RequestMapping(value = "/personInfo/{personId}", method = RequestMethod.GET)
     String personInfo(Model model, 
         @PathVariable(value = "personId") Long personId){ //Long type is permit here?
