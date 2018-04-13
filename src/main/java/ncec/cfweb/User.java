@@ -2,6 +2,7 @@ package ncec.cfweb;
 
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,28 +29,17 @@ public class User {
     
     private String login;
 
-    @Transient
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
-    private Set<Catalog> catalogs;  //Is Need???
-
-    @Transient
-    //Is Need???
-//    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
     private Set<Movie> movies;
     
-    //wroten constructors
-
     protected User() {
     }
     
-
     public User(String firstname, String lasttname, String login) {
         this.firstname = firstname;
         this.lastname = lasttname;
         this.login = login;
-        
-//        this.id = computeId();
-//        ides.add(id);
     }
 
     public Long getId() {
@@ -85,19 +75,6 @@ public class User {
     }
     
 
-//    public void addMovie(Movie movie){
-//        //there is checking need?
-//        movies.add(movie);
-//    }
-    
-//    private static int computeId(){
-//        int newid = 1;
-//        while(ides.contains(newid)){
-//            newid = 1 + new Random().nextInt(101);
-//        }
-//        return newid;
-//    }
-
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", login=" + login + '}';
@@ -105,11 +82,10 @@ public class User {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 29 * hash + Objects.hashCode(this.id);
-        hash = 29 * hash + Objects.hashCode(this.firstname);
-        hash = 29 * hash + Objects.hashCode(this.lastname);
-        hash = 29 * hash + Objects.hashCode(this.login);
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.firstname);
+        hash = 47 * hash + Objects.hashCode(this.lastname);
+        hash = 47 * hash + Objects.hashCode(this.login);
         return hash;
     }
 
@@ -125,14 +101,16 @@ public class User {
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.catalogs, other.catalogs)) {
+        if (!Objects.equals(this.firstname, other.firstname)) {
             return false;
         }
-        if (!Objects.equals(this.movies, other.movies)) {
+        if (!Objects.equals(this.lastname, other.lastname)) {
+            return false;
+        }
+        if (!Objects.equals(this.login, other.login)) {
             return false;
         }
         return true;
     }
-    
     
 }

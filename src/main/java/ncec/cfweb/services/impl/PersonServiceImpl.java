@@ -19,17 +19,15 @@ public class PersonServiceImpl implements PersonService{
     PersonRepository personRepository;
 
     @Override
-    public Person addPerson(Person person) {
-        //...
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void deleteById(Long id) {
-        throw new UnsupportedOperationException();
-//        personRepository.deleteById(id);
+        
     }
     
+    @Override
+    public Person addPerson(Person person) {// tm Person on void
+        return personRepository.save(person);// tm not return
+    }
+
     //find or get???
     @Override
     public Person getById(Long id) {
@@ -42,13 +40,26 @@ public class PersonServiceImpl implements PersonService{
         return personRepository.findByFirstnameAndLastname(firstname, lastname);
     }
 
+    //исправить на update!
     @Override
-    public Person editPerson(Person person) {
-        //...
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Person editPerson(String firstname, String lastname, int age) { // temporary
+        List<Person> persons = personRepository.findByFirstnameAndLastname(firstname, lastname);
+        if (persons.isEmpty()) {
+            throw new IllegalArgumentException("Person not found + "+firstname +" "+lastname);
+        } //it is need to old values!??!!!??!
+        if (persons.size() > 1) {
+            throw new IllegalArgumentException("Several persons exist with specified name");
+        }
+
+        Person person = persons.get(0);
+        person.setFirstname(firstname);
+        person.setLastname(lastname);
+        person.setAge(age);
+        
+        return personRepository.save(person);
     }
 
-    //Is it rightly?????
+
     @Override
     public List<Person> getAll() {
         return (List<Person>)personRepository.findAll();

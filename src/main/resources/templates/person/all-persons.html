@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -29,20 +24,22 @@ and open the template in the editor.
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/">Home</a></li>
-                <li><a href="/movie/allMovies">Movies</a></li>
-                <li class="active"><a href="/person/allPersons">Persons</a></li>
-                <li><a href="/movie/create-person-page">Create Person</a></li>
+                <li><a href="/movie/all-movies">Movies</a></li>
+                <li class="active"><a href="/person/all-persons">Persons</a></li>
+                <li><a href="/person/create-person-page">Create Person</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 
+    <!--th:object="${personNameForm}"-->
     <div class="container">
-        <form th:action="@{/movie/search-person-page}" th:object="${personNameForm}" method="post">
+        <form th:action="@{/person/search-person-page}" method="post">
             <p>
-                Search Name of Person <input type="text" th:field="*{personName}" />
+                Search Person By FirstName: <input type="text" name="firstname" th:value="*{firstname}" />
+                                and LastName: <input type="text" name="lastname" th:value="*{lastname}" />
             </p>
-            <p><input type="submit" value="Search" /></p>
+            <p><input type="submit" value="Search" /> <input type="reset" value="Reset" /></p>
         </form>
     </div>
     
@@ -59,10 +56,10 @@ and open the template in the editor.
                 <tr th:each="person : ${persons}">
                 <td>
 
-                <a th:href="@{/person/personInfo(lastname=${person.lastname}, firstname=${person.firstname})}"
+                <a th:href="@{/person/person-info(lastname=${person.lastname}, firstname=${person.firstname})}"
                    th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
 
-               // <a th:href="@{/person/personInfo/{personId}(personId=${person.id})}" th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
+               <!--<a th:href="@{/person/person-info/{personId}(personId=${person.id})}" th:text="${person.firstname} + ' ' + ${person.lastname}"></a>-->
 
                 </td>
                 </tr>

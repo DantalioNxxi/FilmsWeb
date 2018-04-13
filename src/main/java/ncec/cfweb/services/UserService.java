@@ -10,8 +10,6 @@ import ncec.cfweb.User;
  */
 public interface UserService {
     
-    User addUser(User user);
-    
     void delete(String login);
     
     User getByLogin(String login);

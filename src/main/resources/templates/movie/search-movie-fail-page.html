@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <title>TODO supply a title</title>
+</head>
+    
+<body>
+    
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Movie Library</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/movie/all-movies">Movies</a></li>
+                <li><a href="/person/all-persons">Persons</a></li>
+                <li><a href="/movie/create-movie-page">Create Movie</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+    
+    
+    <div>Фильмов с именем <span th:text="${movieName}"></span> не найдено</div>
+
+    <form action="#" th:action="@{/movie/create-movie-page}" method="get">
+        <button th:href="@{/movie/create-movie-page}">Create new film</button>
+        <input name="movieName" th:value="${movieName}" type="hidden" />
+    </form>
+
+    <form th:action="@{/movie/import-movie}" method="post">
+        <input name="movieName" th:value="${movieName}" type="hidden" />
+        <button type="submit">Import Movie from IMDb</button>
+    </form>
+</body>
+
+
+        <form action="#" th:action="@{/}" method="get">
+            <p>
+                <button th:href="@{/index}">Main Page</button>
+            </p>
+        </form>
+</html>

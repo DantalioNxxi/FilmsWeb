@@ -1,8 +1,7 @@
 [
   {
     "_class": "ncec.cfweb.Movie",
-    "title": "Godfather",
-    "director": {"_class": "ncec.cfweb.Person", "firstname": "Francis", "lastname": "Coppola"}
+    "title": "Godfather"
   },
   {
     "_class": "ncec.cfweb.Movie",

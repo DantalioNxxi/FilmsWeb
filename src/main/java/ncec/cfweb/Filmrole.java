@@ -3,12 +3,9 @@ package ncec.cfweb;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
@@ -24,17 +21,11 @@ public class Filmrole {
     private Long id;
     private String fullname;
     
-    @Transient
-//    @ManyToMany(mappedBy = "creator", fetch = FetchType.EAGER)//columns
+    @ManyToMany(mappedBy = "personages")
     private Set<Movie> movies;
     
-    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY) //mappedBy = "personages"
-//    @JoinTable(name = "PERSONAGE_ACTORS",
-//            joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "ACTOR_ID", referencedColumnName = "id")
-//    )
-    private Set<Movie> actors;
+    @ManyToMany(mappedBy = "personages")
+    private Set<Person> actors;
     
     public Filmrole() {
     }
@@ -61,9 +52,8 @@ public class Filmrole {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + Objects.hashCode(this.id);
-        hash = 17 * hash + Objects.hashCode(this.fullname);
+        int hash = 3;
+        hash = 79 * hash + Objects.hashCode(this.fullname);
         return hash;
     }
 
@@ -80,9 +70,6 @@ public class Filmrole {
         }
         final Filmrole other = (Filmrole) obj;
         if (!Objects.equals(this.fullname, other.fullname)) {
-            return false;
-        }
-        if (!Objects.equals(this.movies, other.movies)) {
             return false;
         }
         return true;

@@ -18,11 +18,6 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public User addUser(User user) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void delete(String login) {
 //        User delUser = userRepository.getByLogin(login);
         userRepository.deleteByLogin(login);
@@ -43,6 +38,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByFirstnameAndLastname(firstname, lastname);
     }
 
+    //исправить на update!
     @Override
     public User editUser(User user) {
         //...

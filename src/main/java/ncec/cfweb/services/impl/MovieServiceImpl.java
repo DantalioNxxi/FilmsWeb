@@ -1,8 +1,5 @@
 package ncec.cfweb.services.impl;
 
-import com.opencsv.CSVWriter;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.sql.ResultSet;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import ncec.cfweb.Movie;
@@ -21,11 +16,15 @@ import ncec.cfweb.Person;
 import ncec.cfweb.repositories.MovieRepository;
 import ncec.cfweb.services.MovieService;
 import ncec.cfweb.services.PersonService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.opencsv.CSVWriter;
+import java.util.ArrayList;
 import org.w3c.tidy.Tidy;
 
 import javax.xml.bind.JAXB;
@@ -49,18 +48,16 @@ public class MovieServiceImpl implements MovieService{
 
     @Autowired
     PersonService personService;
-
-    @Override
-    public Movie addMovie(Movie movie) {//or use help from another service?
-        //...
-        //return movieRepository.save(movie);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public Movie addMovie(String title, Date date, int duration, String description) {
         //cheking for having such film in db
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Movie movie = new Movie();
+        movie.setTitle(title);
+        movie.setDateCreation(date);
+        movie.setDuration(duration);
+        movie.setDescription(description);
+        return movieRepository.save(movie);
     }
     
     @Override
@@ -79,53 +76,14 @@ public class MovieServiceImpl implements MovieService{
         return movieRepository.findById(id);
     }
     
-    @Override
-    public Movie editMovie(Movie movie) {
-        //...
-        return movieRepository.save(movie);//newMovie
-    }
 
     @Override
     public List<Movie> getAll() {
         return movieRepository.findAll();//is permit?
     }
 
-    @Override
-    public void exportMovies(List<Long> movieIds, OutputStream out) throws IOException {
-        List<Movie> movies = getByIds(movieIds);
-        try (CSVWriter csv = new CSVWriter(new OutputStreamWriter(out))) {
-            String[] line = new String[3];
-            for (Movie movie : movies) {
-                line[0] =  movie.getTitle();
-                line[1] =  Integer.toString(movie.getDuration());
-                line[2] =  movie.getDescription();
-                csv.writeNext(line, true);
-            }
-        }
-    }
-
-
-
-    // VYZH: todo: 1) return File/Stream/etc -OR- 2) add OutputStream in parameters
-    @Override
-    public File exportAllMovies(List<Movie> movies) {
-        //or export Object items in another service?
-        try(CSVWriter writer
-            = new CSVWriter(new BufferedWriter(new FileWriter("/movies.csv")))){
-            writer.writeNext(new String[]{"MOVIE_ID", "TITLE", "DURATION",
-                "DIRECTOR_FIRSTNAME", "DIRECTOR_LASTNAME"});
-            for (Movie movie : movies) {
-                String[] line = formatMovieToLine(movie); // method to format properties of Participant with comma's
-                writer.writeNext(line);
-            }
-//            writer.close();
-        } catch (IOException ex) {
-//            return new File("/movies.csv");
-            //...later
-        }
-        return new File("/movies.csv");
-    }
-
+    
+    //исправить на update!
     @Override
     public Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname) {
         List<Movie> movies = movieRepository.findByTitle(movieName);
@@ -156,6 +114,21 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public List<Movie> getByIds(Collection<Long> movieIds) {
         return (List<Movie>) movieRepository.findAll(movieIds);
+    }
+    
+    // VYZH: todo: 1) return File/Stream/etc -OR- 2) add OutputStream in parameters
+    @Override
+    public void exportMovies(List<Long> movieIds, OutputStream out) throws IOException {
+        List<Movie> movies = getByIds(movieIds);
+        try (CSVWriter csv = new CSVWriter(new OutputStreamWriter(out))) {
+            String[] line = new String[3];
+            for (Movie movie : movies) {
+                line[0] =  movie.getTitle();
+                line[1] =  Integer.toString(movie.getDuration());
+                line[2] =  movie.getDescription();
+                csv.writeNext(line, true);
+            }
+        }
     }
 
     @Override
@@ -191,6 +164,13 @@ public class MovieServiceImpl implements MovieService{
         } catch (TransformerException e) {
             throw new IllegalStateException(e);
         }
+        
+        //for checking after xsl-handle:
+        try(FileWriter fw = new FileWriter("afterXsltForShow.txt", false)){
+              fw.write(afterXslt.toString());
+        } catch (IOException ex){
+            throw new IllegalStateException(ex);
+        }
 
         LOG.debug("afterXslt = {}", afterXslt.toString());
 
@@ -204,20 +184,86 @@ public class MovieServiceImpl implements MovieService{
         // 1) проверить дублирование названий фильмов, убрать, сделать название на английском
         // 2) выбор фильмов подлежащих импорту, импортировать не все сразу
         // 3) добавить параметры - год, жанры, режисер, актеры
-        return (List<Movie>) movieRepository.save(movies.getMovies());
-    }
+//        return (List<Movie>) movieRepository.save(movies.getMovies());
 
-    // VYZH: todo: consider StatefulBeanToCsv, writer.writeNext(String[]) is suboptimal
-    String [] formatMovieToLine(Movie movie){
-        String [] str = new String[5];
-        str[0] = Long.toString(movie.getId());
-        str[1] = movie.getTitle();
-        str[2] = Integer.toString(movie.getDuration());
-        str[3] = "dirFirstName"; // VYZH: todo: NPE
-        str[4] = "dirLastName"; // VYZH: todo: NPE
-//        str[3] = movie.getDirector().getFirstname(); // VYZH: todo: NPE
-//        str[4] = movie.getDirector().getLastname(); // VYZH: todo: NPE
-        return str;
+//        System.out.println("Получем ids");
+//        List<Movie> retMovies = movies.getMovies();
+        ArrayList<Movie> retMovies = (ArrayList<Movie>)movies.getMovies();//ver2
+        System.out.println("Сперва выведем названия фильмов:");
+        System.out.println(retMovies.get(2).getTitle());
+        System.out.println(retMovies.get(3).getTitle());
+        System.out.println(retMovies.get(4).getTitle());
+//        retMovies = moviesGetId(retMovies);
+        
+//        System.out.println("Пробуем вывести ids:\n");
+//        for (Movie movie : retMovies){
+//            System.out.println(movie.getId());
+            
+//        System.out.println("\nПросто выведем этот лист:");
+//        for (Movie movie : retMovies){
+//            System.out.println(movie.toString());
+//        }
+
+        return retMovies;
+//        return movies.getMovies();
     }
     
+    private List<Movie> moviesGetId(List<Movie> movies){//may be with help os Stream API?
+        long i = 1;
+        
+        for (Movie movie : movies){
+            movie.setId(i);
+            System.out.println("i="+i);
+            i++;
+        }
+        return movies;
+    }
+    
+    @Override
+    public void saveMovies(List<Movie> movies, List<Integer> ids) {
+        //still there is nothing for return
+//        for (Movie movie : movies){
+//            System.out.println(movie.toString());
+//        }
+        
+//        movieRepository.save(movies);
+
+        for (Integer i : ids){
+            Movie movie = movies.get(i);
+            if (movieRepository.findByTitle(movie.getTitle()).isEmpty()){
+                System.out.println("Выводим фильм под индексом: "+i);
+                System.out.println(movies.get(i).getClass().getSimpleName());//ver2 - title
+    //            movieRepository.save(movies.get(i));
+
+                //parse director
+                String[] str = movie.getFullname().split(" ");
+                if (personService.getByFirstAndLastName(str[0], str[1]).isEmpty()){
+                    Person person = new Person(str[0], str[1]);
+                    movie.setDirector(personService.addPerson(person));
+                } else {
+                    movie.setDirector(personService.getByFirstAndLastName(str[0], str[1]).get(0));//tm
+                }
+
+                //parse date
+                Integer date = Integer.parseInt(parseDateCreation(movie.getFulldate()));
+//                movie.setDateCreation(date);//or made to Integer?
+            }
+            
+        }
+        
+        
+    }
+    
+    private String parseDateCreation(String fulldate){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fulldate.length(); i++){
+            if (Character.isDigit(fulldate.charAt(i))){
+                int elem = Character.digit(fulldate.charAt(i), 10);
+                sb.append(elem);
+            }
+        }
+        return sb.toString();
+    }
+
+    //END of class
 }

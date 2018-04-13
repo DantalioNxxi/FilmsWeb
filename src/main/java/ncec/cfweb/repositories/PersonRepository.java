@@ -2,7 +2,6 @@ package ncec.cfweb.repositories;
 
 import java.util.List;
 import ncec.cfweb.Person;
-import ncec.cfweb.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +11,13 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Person.PersonPk>{
-
-//    void deleteById(Long id);
-
+    
     List<Person> findByFirstnameAndLastname(String firstname, String lastname);
 
-//    Person findById(Long id);
+//    Person findById(Person.PersonPk id);//tm
+    
+//    void deleteById(Person.PersonPk id);//tm
+    
+    void deleteByFirstnameAndLastname(String firstname, String lastname);//tm
+    
 }

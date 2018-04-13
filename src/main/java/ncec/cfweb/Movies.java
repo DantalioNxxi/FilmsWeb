@@ -12,6 +12,8 @@ import java.util.List;
 public class Movies {
 
     List<Movie> movies = new ArrayList<>();
+    
+    List<String> directors = new ArrayList<>();
 
     public List<Movie> getMovies() {
         return movies;
@@ -20,4 +22,14 @@ public class Movies {
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
     }
+
+    public List<String> getDirectors() {
+        return directors;
+    }
+
+    public void setDirectors(List<String> director) {
+        this.directors = director;
+    }
+    
+    
 }

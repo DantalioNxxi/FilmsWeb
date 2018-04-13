@@ -1,6 +1,7 @@
 package ncec.cfweb;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,19 +18,8 @@ public class Genre {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
+    @Column(unique = true)
     private String name;//must be is unique
-    
-    static{//how to...
-//        FANTASTIC("Фантастика"),
-//        FANTASY("Фэнтези"),
-//        DRAMA("Драма"),
-//        MELODRAMA("Мелодрама"),
-//        THRILLER("Триллер"),
-//        DETECTIVE("Детектив"),
-//        HORROR("Ужасы"),
-//        ADVENTURE("Приключение"),
-//        COMEDY("Комедия");
-    }
 
     public Genre(String name) {
         this.name = name;
@@ -56,9 +46,8 @@ public class Genre {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.id);
-        hash = 59 * hash + Objects.hashCode(this.name);
+        int hash = 5;
+        hash = 31 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -81,3 +70,15 @@ public class Genre {
     }
     
 }
+
+//    static{//how to...
+////        FANTASTIC("Фантастика"),
+////        FANTASY("Фэнтези"),
+////        DRAMA("Драма"),
+////        MELODRAMA("Мелодрама"),
+////        THRILLER("Триллер"),
+////        DETECTIVE("Детектив"),
+////        HORROR("Ужасы"),
+////        ADVENTURE("Приключение"),
+////        COMEDY("Комедия");
+//    }

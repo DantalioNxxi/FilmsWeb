@@ -16,13 +16,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,52 +45,42 @@ public class Movie {
     @XmlElement
     private String title;
 
-    @Temporal(TemporalType.DATE) //????????????
+    @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
     private int duration;
 
     @XmlElement
-    private String description;//????how to set it????
+    private String description;
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade = CascadeType.ALL) // must be : optional = false
-//    @JoinColumn(name = "CREATOR_ID")
+    @ManyToOne(optional = true)
     private User creator;
     
-    @OneToMany(fetch = FetchType.EAGER, targetEntity = Genre.class)
+    @Transient
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, targetEntity = Genre.class)
     private Set<Genre> genres;
     
-//    private HashMap<String, Person> persons;
-//    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})  //mappedBy = "movies"
-//    @ManyToMany(mappedBy = "movies")
-    
-//    @JoinTable(name = "MOVIE_ACTORS",
-//            joinColumns = @JoinColumn(name = "MOVIE_ID", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "PERSON_ID", referencedColumnName = "id")
-//    )
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) //Movie - is owner
     private Set<Person> persons;
     
-    @Transient
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "MOVIE_PERSONAGES",
-//            joinColumns = @JoinColumn(name = "MOVIE_ID"), //, referencedColumnName = "id"
-//            inverseJoinColumns = @JoinColumn(name = "FILMROLE_ID", referencedColumnName = "id")
-//    )
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Filmrole> personages;
 
-    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {}) //каскадность пока убрал...
+    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Person director;
     
-//    @OneToMany//or print in DB-field
-    @ElementCollection
-    private Set<String> countries;
+    @Transient
+    @XmlElement
+    private String fullname;//tm
+    
+    @Transient
+    @XmlElement
+    private String fulldate;//tm
     
     public Movie() {
     }
     
-    public Movie(String title, Date date, int duration) {
+    public Movie(String title, Date date, int duration, String description) {
         this.title = title;
         this.dateCreation = date;
         this.duration = duration;
@@ -153,19 +143,29 @@ public class Movie {
         this.director = director;
     }
 
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getFulldate() {
+        return fulldate;
+    }
+
+    public void setFulldate(String fulldate) {
+        this.fulldate = fulldate;
+    }
+    
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 19 * hash + Objects.hashCode(this.id);
-        hash = 19 * hash + Objects.hashCode(this.title);
-        hash = 19 * hash + Objects.hashCode(this.dateCreation);
-        hash = 19 * hash + this.duration;
-        hash = 19 * hash + Objects.hashCode(this.description);
-        hash = 19 * hash + Objects.hashCode(this.creator);
-        hash = 19 * hash + Objects.hashCode(this.genres);
-        hash = 19 * hash + Objects.hashCode(this.persons);
-        hash = 19 * hash + Objects.hashCode(this.personages);
-        hash = 19 * hash + Objects.hashCode(this.director);
+        hash = 97 * hash + Objects.hashCode(this.title);
+        hash = 97 * hash + this.duration;
+        hash = 97 * hash + Objects.hashCode(this.description);
         return hash;
     }
 
@@ -181,18 +181,23 @@ public class Movie {
             return false;
         }
         final Movie other = (Movie) obj;
+        if (this.duration != other.duration) {
+            return false;
+        }
         if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.description, other.description)) {
             return false;
         }
         if (!Objects.equals(this.dateCreation, other.dateCreation)) {
             return false;
         }
-        if (!Objects.equals(this.director, other.director)) {
-            return false;
-        }
         return true;
     }
-    
-    
-    
+
 }
+
+////    @OneToMany//or print in DB-field
+//    @ElementCollection
+//    private Set<String> countries;

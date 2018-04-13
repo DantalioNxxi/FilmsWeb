@@ -1,19 +1,11 @@
 package ncec.cfweb.controllers;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.opencsv.CSVWriter;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import ncec.cfweb.Movie;
-import ncec.cfweb.MovieForm;
-import ncec.cfweb.MovieNameForm;
 import ncec.cfweb.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +16,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -42,251 +35,188 @@ public class MovieController {
 
     @Autowired
     MovieService movieService;
+    
+    //===========Movie Info=====================
 
-    @GetMapping(value = "/movieInfo/{movieId}")
+    @GetMapping(value = "/movie-info/{movieId}")
     String movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
         Movie movie = movieService.getById(movieId);
         model.addAttribute("movie", movie);
         model.addAttribute("duration", movie.getDuration()); // VYZH: todo: bad practice
         model.addAttribute("releasedate", movie.getDateCreation()); // VYZH: todo: bad practice
         model.addAttribute("directorname", "default");
-        return "movieInfo";
+        return "movie/movie-info";
 //        return new ModelAndView("movieInfo", "movie", movie, );
     }
+    
+    @PostMapping(value = "/movieInfo{movieId}")
+    ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
+            @RequestParam(value="movieName") String movieName){
+        //check by parse for movieName
+        Movie movie = movieService.getById(movieId);        //where is the checking must being?
+        return new ModelAndView("movie/movie-info", "movie", movie);
+    }
+    
+    //===========Search Movies=====================
 
     @GetMapping(value = "/search-movie-page")
     String searchMoviePage(){
-        return "searchMoviePage";
+        return "movie/search-movie-page";
     }
 
     @PostMapping(value = "/search-movie-page")
-    String searchMovie(Model model, @ModelAttribute("movieNameForm") MovieNameForm movieNameForm){
-        //check by parse for movieName
-        String mName = movieNameForm.getMovieName();
-        List<Movie> movies = movieService.getByName(mName); // в будущем расширенный поиск и критерии
-        //where is the checking must being?
+    String searchMovie(Model model, @RequestParam String movieName){
+        
+        System.out.println("INTERNAL CONTROL");
+        
+        List<Movie> movies = movieService.getByName(movieName);
+        
         if (movies.isEmpty()){
-            model.addAttribute("movieName", mName);
-            return "searchMovieFailPage";
+            model.addAttribute("movieName", movieName);
+            return "movie/search-movie-fail-page";
         } else{
             model.addAttribute("movies", movies);
-            return "searchMovieResaultPage";
+            return "movie/search-movie-result-page";
         }
     }
 
     @GetMapping(value = "/search-movie-fail-page{movieName}") //если в будущем не только имя?
     String searchMovieFailPage(Model model, @PathVariable(value = "movieName") String movieName){
         model.addAttribute("movieName", movieName);
-        return "searchMovieFailPage";
+        return "movie/search-movie-fail-page";
     }
 
     //===========All Movies=====================
     
-//    @GetMapping(value = "/allMovies")
-//    ModelAndView allMovies(){
-//        return new ModelAndView("allMovies", "movies", movieService.getAll());
-//    }
-    
-    @GetMapping(value = "/allMovies")
-    public String allMovies(Model model) {
+    @GetMapping(value = "/all-movies")
+    public ModelAndView allMovies(Model model) {
  
-        MovieNameForm movieNameForm = new MovieNameForm();
-        model.addAttribute("movieNameForm", movieNameForm);
-        model.addAttribute("movies", movieService.getAll());
+        ModelAndView mv = new ModelAndView("movie/all-movies");
+        mv.addObject("movies", movieService.getAll());
  
-        return "allMovies";
+        return mv;
     }
     
-    @PostMapping(value = "/allMovies")
+    @PostMapping(value = "/all-movies")
     String allMoviesSearch(Model model,
-//            @RequestParam(value="movieName") String movieName,
-//            @RequestParam(value="date") Date date, // special form for to fit a date????
-//            @RequestParam(value="duration") Integer duration,
-//            @RequestParam(value="description") String description){
-            @ModelAttribute("movieForm") MovieForm movieForm){
+            @RequestParam(value="movieName") String title,
+            @RequestParam(value="date") Date date, // special form for to fit a date????
+            @RequestParam(value="duration") Integer duration,
+            @RequestParam(value="description") String description){
         //check by parse for movieName, date, duration and description
         
-        if (!movieService.getByName(movieForm.getTitle()).isEmpty()){
+        if (!movieService.getByName(title).isEmpty()){
             return "redirect: create-movie-fail-page?message=Фильм с таким именем существует!";
         }
         
-        Movie movie = movieService.addMovie(
-                movieForm.getTitle(),
-                movieForm.getDateCreation(), // validation for Date!!!
-                movieForm.getDuration(),
-                movieForm.getDescription());
-        model.addAttribute("movie", movie);
-        return "redirect: allMovies";
+        movieService.addMovie(title, date, duration, description);
+        
+        return "redirect:movie/all-movies"; //movie/ was added
     }
+    
+    //============Import=============
+    
+    @PostMapping("/import-movie")
+    String importPage(@RequestParam String movieName, RedirectAttributes redirectAttributes){
+        ArrayList<Movie> movies = (ArrayList<Movie>)movieService.importMovie(movieName);//ver2
+        redirectAttributes.addFlashAttribute("movies", movies);
+        return "redirect:/movie/import-movie-result";
+//        return "redirect:/all-movies";
+//        return new ModelAndView("import/import-movie-page", "movies", movies);
+    }
+    
+    @GetMapping(value = "/import-movie-result")
+    ModelAndView importResultPage(){ //@ModelAttribute List<Movie> movies
+        
+        
+        
+        
+        return new ModelAndView("import/import-movie-page");//.addObject("movies", movies)
+    }
+    
+    @PostMapping(value = "/import-movie-save")
+    ModelAndView importAfterSavePage(Model model, @RequestParam List<Integer> movieIds,
+            @Valid @ModelAttribute("movies") ArrayList movies){ 
+        
+//        movies = (List<Movie>)(redirectAttributes.getFlashAttributes().get("movies"));
+        
+        System.out.println("Выведем полученные индексы movieIds: ");
+        for (Integer i : movieIds){
+            System.out.print(i+" ");}
+        
+        System.out.println("\nВыведем размер movies: ");
+        System.out.println(movies.size());
+        System.out.println(movies.get(5).getClass().getSimpleName());
+//
+//        movieService.addMovie(movies.get(2));
+        
+        movieService.saveMovies(movies, movieIds);
+        
+        return new ModelAndView("import/import-movie-save-page","quantityMovies", 2)//movieIds.size()
+//                .addObject("movies", movieIds);//temporrary is four
+                .addObject("movies", movieService.getAll());//temporrary is four
+    }
+    
     
     //===========Create Movie=====================
     
     @GetMapping(value = "/create-movie-page")
-    public String showCreateMoviePage(Model model) {
- 
-        MovieForm movieForm = new MovieForm();
-        model.addAttribute("movieForm", movieForm);
- 
-        return "create-movie-page";
+    public String showCreateMoviePage(@RequestParam (value="movieName") String movieName) {
+        //...
+        return "movie/create-movie-page";
     }
 
     //cheking of the name of the film
     @PostMapping(value = "/create-movie-page")
-    String createMovie(Model model,
-//            @RequestParam(value="movieName") String movieName,
-//            @RequestParam(value="date") Date date, // special form for to fit a date????
-//            @RequestParam(value="duration") Integer duration,
-//            @RequestParam(value="description") String description){
-            @ModelAttribute("movieForm") MovieForm movieForm){
-        //check by parse for movieName, date, duration and description
+    String createMovie(@RequestParam(value="movieName") String movieName,
+            @RequestParam(value="date") Date date, // special form for to fit a date????
+            @RequestParam(value="duration") Integer duration,
+            @RequestParam(value="description") String description){
+        //check by parse for movieName, date, duration and description...
         
-        if (!movieService.getByName(movieForm.getTitle()).isEmpty()){
+        if (!movieService.getByName(movieName).isEmpty()){
             return "redirect: create-movie-fail-page?message=Фильм с таким именем существует!";
         }
         
-        Movie movie = movieService.addMovie(
-                movieForm.getTitle(),
-                movieForm.getDateCreation(),
-                movieForm.getDuration(),
-                movieForm.getDescription());
-        model.addAttribute("movie", movie);
-        return "redirect: allMovies";
+        Movie movie = movieService.addMovie(movieName, date, duration, description);
+        //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
+        return "redirect: all-movies";
     }
-
-    //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
 
     //===========Edit Movie=====================
 
-    // VYZH: todo: one method with GET mapping to draw the form
     @GetMapping(value = "/edit-movie-page")
     ModelAndView getEditMovie(@RequestParam Long id) {
-        return new ModelAndView("editMoviePage", "movie", movieService.getById(id));
+        return new ModelAndView("movie/edit-movie-page", "movie", movieService.getById(id));
     }
 
-    // VYZH: todo: one method with GET mapping to accept form submission
     @PostMapping(value = "/edit-movie-page")
     ModelAndView postEditMovie(
             @RequestParam(value="title") String movieName,
-//            @RequestParam(value="date") Date date, // special form for to fit a date????
-//            @RequestParam(value="duration") Integer duration,
-//            @RequestParam(value="description") String description,
+            @RequestParam(value="date") Date date, // special form for to fit a date????
+            @RequestParam(value="duration") Integer duration,
+            @RequestParam(value="description") String description,
             @RequestParam(value="director_firstname") String directorFirstname,
-            @RequestParam(value="director_lastname") String directorLastname
-    ){
+            @RequestParam(value="director_lastname") String directorLastname)
+    {
         //check by parse for movieName, date, duration and description
-        Movie movie = movieService.editMovie(movieName, null, 0, "",
-                directorFirstname, directorLastname);
+        Movie movie = movieService.editMovie(movieName, date, duration, description, directorFirstname, directorLastname);
+        //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
 //        model.addAttribute("movie", movie);
-        return new ModelAndView("movieInfo", "movie", movie);
+        return new ModelAndView("movie/movie-info", "movie", movie);
     }
-    //editMovie (взаимодействие с секьюрити (модератор, администратор, юзер, гость))
-
-  
-    @PostMapping(value = "/movieInfo{movieId}")
-    ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
-            @RequestParam(value="movieName") String movieName){
-        //check by parse for movieName
-        Movie movie = movieService.getById(movieId);        //where is the checking must being?
-        return new ModelAndView("movieInfo", "movie", movie);
-    }
+    
 
     //============Export============= 
 
-    @PostMapping("/export-allmovies")
+    @PostMapping("/export-all-movies")
     public ResponseEntity<StreamingResponseBody> exportAllMovies(@RequestParam List<Long> movieIds){
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"movies.csv\"")
                 .body(out -> movieService.exportMovies(movieIds, out));
     }
     
-    //============Import=============
-
-    @PostMapping("/import-movie")
-    ModelAndView importPage(@RequestParam String movieName){
-        List<Movie> movies = movieService.importMovie(movieName);
-        return new ModelAndView("import/result", "movies", movies);
-    }
-    
-    
-    
-    
-    
-    //============Export============= 
-    
-    
-    
-    
-    @PostMapping(value = "/export-allmovies")
-    public @ResponseBody String exportAllMovies(Model model, @RequestParam("file") MultipartFile file){
-        //check by parse for movieName
-        List<Movie> movies = movieService.getAll();
-        //temporary all...
-        //where is the checking must being?
-        if (movies.isEmpty()){
-            return "redirect:/export-fail-page";
-        } else if (!file.isEmpty()){
-            
-            try {
-//                byte[] bytes = file.getBytes();
-                File f1 = movieService.exportAllMovies(movies);
-                byte[] bytes = Files.readAllBytes(f1.toPath());
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(f1));
-                stream.write(bytes);
-                stream.close();
-                
-//                String pathToCSV = movieService.exportAllMovies(movies);
-                model.addAttribute("countMovies", Integer.toString(movies.size()));
-                model.addAttribute("pathToCSV", "/movie.csv");
-                return "successExportAllmovies";
-                
-//                return "Вы удачно загрузили!";
-            } catch (Exception e) {
-                return "Вам не удалось загрузить файл";
-            }
-            
-        }
-        return "Вам не удалось загрузить, потому что файл пустой.";
-    }
-    @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
-            @RequestParam("file") MultipartFile file){
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(name + "-uploaded")));
-                stream.write(bytes);
-                stream.close();
-                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
-            } catch (Exception e) {
-                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
-            }
-        } else {
-            return "Вам не удалось загрузить " + name + " потому что файл пустой.";
-        }
-    }
-//    @PostMapping(value = "/export-allmovies")
-//    String exportAllMovies(Model model){
-//        //check by parse for movieName
-//        List<Movie> movies = movieService.getAll(); // VYZH: todo: not all but selected entities
-//        //temporary all...
-//        //where is the checking must being?
-//        if (movies.isEmpty()){
-//            return "redirect:/export-allmovies/fail-page";
-//        } else{
-//            String pathToCSV = movieService.exportAllMovies(movies);
-//            model.addAttribute("countMovies", Integer.toString(movies.size()));
-//            model.addAttribute("pathToCSV", pathToCSV);
-//            return "successExportAllmovies";
-//        }
-//    }
-
-    // VYZH: todo: move to MovieController
-    // VYZH: todo: implement file download in the browser
-    // https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-return-types
-    // ResponseEntity + StreamingResponseBody
-    @GetMapping(value = "/export-allmovies/fail-page")
+    @GetMapping(value = "/export-all-movies/fail-page")
     @ResponseBody
     String exportFailPage(){
         return "There are nothing for to export.";
@@ -294,22 +224,4 @@ public class MovieController {
     
     
     
-    
-        //============Import=============
-
-    
-    @GetMapping(value = "/import-movie")
-    @ResponseBody
-    String importPage(){
-        return "It is not realized else!";
-    }
-    
-//    @GetMapping(value = "/export-allmovies/success-page")
-//    @ResponseBody
-//    String exportSuccessPage(){
-//        return "There are nothing for to export.";
-//    }
-    //at future - button to create/add new film
-    
-    //
 }

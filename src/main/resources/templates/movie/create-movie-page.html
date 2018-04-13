@@ -1,10 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -29,8 +24,8 @@ and open the template in the editor.
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/movie/allMovies">Movies</a></li>
-                    <li><a href="/person/allPersons">Persons</a></li>
+                    <li><a href="/movie/all-movies">Movies</a></li>
+                    <li><a href="/person/all-persons">Persons</a></li>
                     <li class = "active"><a href="/movie/create-movie-page">Create Movie</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
@@ -42,16 +37,18 @@ and open the template in the editor.
             <h1>CREATE A NEW FILM</h1>
             
             <form action="#" th:action="@{/movie/create-movie-page}" method="post">
+                
             <p>
                 Fill the fields:
             </p>
-            <table class="table table-striped table-hover" th:object="${movieForm}">
+                
+            <table class="table table-striped table-hover">
                 
                 <thead>
                     <tr>
                         <td>Название фильма</td>
                         <td>
-                            <input type="text" th:field="*{title}" />
+                            <input type="text" name="movieName" th:value="${movieName}" th:attr="value = ${movieName}"/>
                         </td>
                     </tr>
                 </thead>
@@ -60,20 +57,20 @@ and open the template in the editor.
                     <tr>
                         <td>Дата выхода</td>
                         <td>
-                            <input type="text" th:field="*{dateCreation}" />
+                            <input type="date" name="dateCreation" th:value="${#dates.year(date)}" />
                         </td>
                     </tr>
                     <tr>
                         <td>Продолжительность</td>
                         <td>
-                            <input type="text" th:field="*{duration}" />
+                            <input type="text" name="duration" th:value="${duration}" />
                         </td>
                     </tr>
 
                     <tr>
                         <td>Описание</td>
                         <td>
-                            <input type="text" th:field="*{description}" />
+                            <input type="text" name="description" th:value="${description}" />
                         </td>
                     </tr>
                 </tbody>

@@ -13,12 +13,7 @@ import ncec.cfweb.Movie;
  * @author DantalioNxxi
  */
 
-// service      : operation
-// MovieService : create
-// ServiceX     : get data external_source, then ....
 public interface MovieService {
-    
-    Movie addMovie(Movie movie);
     
     Movie addMovie(String title, Date date, int duration, String description);
     
@@ -28,21 +23,15 @@ public interface MovieService {
     
     Movie getById(Long id);
     
-    Movie editMovie(Movie movie);//or by String name?
-    
     List<Movie> getAll();
-  
-
-    void exportMovies(List<Long> movieIds, OutputStream out) throws IOException;
-
-
-    File exportAllMovies(List<Movie> movies);
-//    String exportAllMovies(List<Movie> movies);
-
 
     Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname);
 
     List<Movie> getByIds(Collection<Long> movieIds);
-
+    
+    void exportMovies(List<Long> movieIds, OutputStream out) throws IOException;
+    
     List<Movie> importMovie(String movieName);
+    
+    void saveMovies(List<Movie> movies, List<Integer> ids);
 }
