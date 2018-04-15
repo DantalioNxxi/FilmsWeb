@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import ncec.cfweb.Movie;
 import ncec.cfweb.services.MovieService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -36,20 +38,22 @@ public class MovieController {
     @Autowired
     MovieService movieService;
     
+    private static final Logger LOG = LoggerFactory.getLogger(MovieController.class);
+    
     //===========Movie Info=====================
 
     @GetMapping(value = "/movie-info/{movieId}")
-    String movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
+    ModelAndView movieInfo(Model model, @PathVariable(value = "movieId") Long movieId){
+        ModelAndView mv = new ModelAndView("movie/movie-info");
         Movie movie = movieService.getById(movieId);
-        model.addAttribute("movie", movie);
-        model.addAttribute("duration", movie.getDuration()); // VYZH: todo: bad practice
-        model.addAttribute("releasedate", movie.getDateCreation()); // VYZH: todo: bad practice
-        model.addAttribute("directorname", "default");
-        return "movie/movie-info";
-//        return new ModelAndView("movieInfo", "movie", movie, );
+        mv.addObject("movie", movie);
+        LOG.info("Movie Info: ");
+        LOG.info("Is movie has persons??: "+movie.getPersons().toString());
+        mv.addObject("persons", movie.getPersons());
+        return mv;
     }
     
-    @PostMapping(value = "/movieInfo{movieId}")
+    @PostMapping(value = "/movie-info{movieId}")
     ModelAndView afterEditInfoMovie(@PathVariable(value = "movieId") Long movieId,
             @RequestParam(value="movieName") String movieName){
         //check by parse for movieName
@@ -73,17 +77,17 @@ public class MovieController {
         
         if (movies.isEmpty()){
             model.addAttribute("movieName", movieName);
-            return "movie/search-movie-fail-page";
+            return "movie/search-movie-miss-page";
         } else{
             model.addAttribute("movies", movies);
             return "movie/search-movie-result-page";
         }
     }
 
-    @GetMapping(value = "/search-movie-fail-page{movieName}") //если в будущем не только имя?
-    String searchMovieFailPage(Model model, @PathVariable(value = "movieName") String movieName){
+    @GetMapping(value = "/search-movie-miss-page{movieName}") //если в будущем не только имя?
+    String searchMovieMissPage(Model model, @PathVariable(value = "movieName") String movieName){
         model.addAttribute("movieName", movieName);
-        return "movie/search-movie-fail-page";
+        return "movie/search-movie-miss-page";
     }
 
     //===========All Movies=====================
@@ -100,16 +104,16 @@ public class MovieController {
     @PostMapping(value = "/all-movies")
     String allMoviesSearch(Model model,
             @RequestParam(value="movieName") String title,
-            @RequestParam(value="date") Date date, // special form for to fit a date????
+//            @RequestParam(value="date") Date date, // special form for to fit a date????
             @RequestParam(value="duration") Integer duration,
             @RequestParam(value="description") String description){
         //check by parse for movieName, date, duration and description
         
         if (!movieService.getByName(title).isEmpty()){
-            return "redirect: create-movie-fail-page?message=Фильм с таким именем существует!";
+            return "redirect: create-movie-miss-page?message=Фильм с таким именем существует!";
         }
         
-        movieService.addMovie(title, date, duration, description);
+        movieService.addMovie(title, duration, description); //date, 
         
         return "redirect:movie/all-movies"; //movie/ was added
     }
@@ -161,7 +165,7 @@ public class MovieController {
     //===========Create Movie=====================
     
     @GetMapping(value = "/create-movie-page")
-    public String showCreateMoviePage(@RequestParam (value="movieName") String movieName) {
+    public String showCreateMoviePage() {
         //...
         return "movie/create-movie-page";
     }
@@ -169,16 +173,16 @@ public class MovieController {
     //cheking of the name of the film
     @PostMapping(value = "/create-movie-page")
     String createMovie(@RequestParam(value="movieName") String movieName,
-            @RequestParam(value="date") Date date, // special form for to fit a date????
+//            @RequestParam(value="dateCreation") Date date, // special form for to fit a date????
             @RequestParam(value="duration") Integer duration,
             @RequestParam(value="description") String description){
         //check by parse for movieName, date, duration and description...
         
         if (!movieService.getByName(movieName).isEmpty()){
-            return "redirect: create-movie-fail-page?message=Фильм с таким именем существует!";
+            return "redirect: create-movie-miss-page?message=Фильм с таким именем существует!";
         }
         
-        Movie movie = movieService.addMovie(movieName, date, duration, description);
+        Movie movie = movieService.addMovie(movieName, duration, description);//date,
         //addMovie независимо от поиска... при этом сервис должен проверить, нет ли такого фильма уже в наличии...
         return "redirect: all-movies";
     }
@@ -209,18 +213,18 @@ public class MovieController {
 
     //============Export============= 
 
-    @PostMapping("/export-all-movies")
-    public ResponseEntity<StreamingResponseBody> exportAllMovies(@RequestParam List<Long> movieIds){
+    @PostMapping("/export-movies")
+    public ResponseEntity<StreamingResponseBody> exportMovies(@RequestParam List<Long> movieIds){
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"movies.csv\"")
                 .body(out -> movieService.exportMovies(movieIds, out));
     }
     
-    @GetMapping(value = "/export-all-movies/fail-page")
-    @ResponseBody
-    String exportFailPage(){
-        return "There are nothing for to export.";
-    }
+//    @GetMapping(value = "/export-movies-miss-page")
+//    @ResponseBody
+//    String exportMissPage(){
+//        return "There are nothing for to export.";     //tm..............
+//    }
     
     
     

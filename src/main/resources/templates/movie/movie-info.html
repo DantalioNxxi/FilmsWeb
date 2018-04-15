@@ -54,20 +54,31 @@
                     <tbody>
                     <tr>
                         <td>Описание</td>
-                        <td th:text="${movie.description}"></td>
+                        <td th:text="*{description}"></td>
                     </tr>
                     <tr>
                         <td>Продолжительность</td>
-                        <td th:text="${movie.duration}"></td>
+                        <td th:text="*{duration}"></td>
                         <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
                     </tr>
                     <tr>
                         <td>Дата выхода</td>
-                        <td th:text="${releasedate}"></td>
+                        <td th:text="*{dateCreation}"></td>
                     </tr>
                     <tr>
                         <td>Режиссёр</td>
                         <td th:text="|${movie?.director?.firstname} ${movie?.director?.lastname}|"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><strong>Актёрский состав:</strong></td>
+                    </tr>
+                    <tr th:each="person, stat : ${persons}">
+                        <td style="width: 50px;">   </td>
+                        <td><p th:text="${stat.count}"></p></td>
+                        <td>
+                        <a  target="_blank" th:href="@{/person/person-info(lastname=${person.lastname}, firstname=${person.firstname})}"
+                   th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

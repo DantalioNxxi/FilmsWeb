@@ -42,7 +42,7 @@
         </form>
     </div>
 
-    <form th:action="@{/movie/export-all-movies}" method="post">
+    <form th:action="@{/movie/export-movies}" method="post">
         <div class="row">
             <input type="submit" class="btn btn-success btn-lg" value="Export Films" />
         </div>
@@ -61,7 +61,7 @@
                         <input type="checkbox" name="movieIds" th:value="${movie.id}" />
                     </td>
                     <td>
-                        <a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                        <a target="_blank" th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                     </td>
                 </tr>
                 </tbody>
@@ -76,24 +76,3 @@
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </body>
 </html>
-
-<!--        <table class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <th>Movies</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="movie : ${movies}">
-                <td>
-                    <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>-->
-        
-<!--        <p>
-            <form action="#" th:action="@{/movie/export-allmovies}" method="post">
-            <p><input type="submit" class="btn btn-success btn-lg" value="Export All Films" /></p>
-            </form>
-        </p>-->

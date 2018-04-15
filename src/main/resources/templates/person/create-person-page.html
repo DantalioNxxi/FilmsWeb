@@ -35,47 +35,58 @@
     <div class="container">
         <div class="jumbotron">
             <h1>CREATE A NEW PERSON</h1>
-            
+
             <form action="#" th:action="@{/person/create-person-page}" method="post">
                 
                 <p>
                     Fill the fields:
                 </p>
 
-                <!--th:object="${personForm}"-->
                 <table class="table table-striped table-hover" >
                     <thead>Head of table for to create a new person</thead>
                     <tbody>
                         <tr>
                             <td>Firstname</td>
                             <td>
-                                <input type="text" name="firstname" th:value="${firstname}" />
+                                <input required="true" type="text" name="firstname" th:value="${firstname}" />
                             </td>
                         </tr>
                         <tr>
                             <td>Lastname</td>
                             <td>
-                                <input type="text" name="lastname" th:value="*{lastname}" />
+                                <input required="true" type="text" name="lastname" th:value="*{lastname}" />
                             </td>
                         </tr>
                         <tr>
                             <td>Age</td>
                             <td>
-                                <input type="number" name="age" th:value="${age}" />
+                                <input required="true" type="number" name="age" th:value="${age}" />
                             </td>
                         </tr>
                         <tr>
                             <td>Gender</td>
                             <td>
-                                <input name="gender" list="gendernames" th:value="${gender}" />
+                                <input required="true" type="radio" name="gender" th:value="MALE"/> MALE<br/>
+                                <input required="true" type="radio" name="gender" th:value="FEMALE"/> FEMALE<br/>
+<!--                                <input name="gender" list="gendernames" th:value="${gender}" />
                                 <datalist id="gendernames">
                                       <option value="MALE"/>
                                       <option value="FEMALE"/>
-                                </datalist>
-<!--                                <select required="true" name="gender" th:field="*{gender}">
-                                <option>Выберите из списка</option>
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option></select>-->
+                                </datalist>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Participation in the creation of films:</strong></td>
+                        </tr>
+                        Participation in the creation of films:
+                        <tr th:each="movie : ${movies}">
+                            <td style="width: 50px;">   </td>
+                            <td>
+                                <input type="checkbox" name="movieIds" th:value="${movie.id}" />
+                            </td>
+                            <td>
+<!--                                <p th:text="${movie.title}"></p>-->
+                                <a target="_blank" th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                             </td>
                         </tr>
                     </tbody>

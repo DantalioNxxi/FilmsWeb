@@ -1,13 +1,13 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
     <title>CFWeb</title>
 </head>
-<body style="padding-top: 70px;">
-
+    
+<body>
+    
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -25,17 +25,29 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/movie/all-movies">Movies</a></li>
                     <li><a href="/person/all-persons">Persons</a></li>
-                    <li><a href="/movie/create-movie-page">Create Movie</a></li>
+                    <li><a href="/movie/create-person-page">Create Person</a></li>
                 </ul>
-            </div><!--/.nav-collapse -->
+            </div>
         </div>
     </nav>
-        <h1>Success Export</h1>
-        <div class="jumbotron">
-            <!--через if и unless-->
-            <p action="#" th:text="'Было экспортировано ' + ${countMovies} + ' фильмов в файл ' + ${pathToCSV}" />
-        </div>
-<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    
+    <div class="container">
+        <p><span th:text="${message}"></span></p>
+    </div>
+
+    <form action="#" th:action="@{/movie/create-person-page}" method="get">
+        <button th:href="@{/movie/create-person-page}">Create new person</button>
+    </form>
+    
+    <p>
+        <a class="btn btn-primary"
+           th:href="@{/}" role="button">Main Page
+        </a>
+    </p>
+    
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
 </body>
+    
 </html>

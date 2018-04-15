@@ -36,8 +36,8 @@
     <div class="container">
         <form th:action="@{/person/search-person-page}" method="post">
             <p>
-                Search Person By FirstName: <input type="text" name="firstname" th:value="*{firstname}" />
-                                and LastName: <input type="text" name="lastname" th:value="*{lastname}" />
+                Search Person By FirstName: <input required="true" type="text" name="firstname" th:value="*{firstname}" />
+                                and LastName: <input required="true" type="text" name="lastname" th:value="*{lastname}" />
             </p>
             <p><input type="submit" value="Search" /> <input type="reset" value="Reset" /></p>
         </form>

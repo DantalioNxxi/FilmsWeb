@@ -4,6 +4,7 @@ package ncec.cfweb;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -57,15 +58,14 @@ public class Movie {
     private User creator;
     
     @Transient
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, targetEntity = Genre.class)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY, targetEntity = Genre.class)
     private Set<Genre> genres;
     
+    @ElementCollection
+//    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY) //Movie - is owner
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) //Movie - is owner
     private Set<Person> persons;
     
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    private Set<Filmrole> personages;
-
     @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Person director;
     
@@ -78,12 +78,16 @@ public class Movie {
     private String fulldate;//tm
     
     public Movie() {
+        persons = new HashSet<>();
+        genres = new HashSet<>();
     }
     
     public Movie(String title, Date date, int duration, String description) {
         this.title = title;
         this.dateCreation = date;
         this.duration = duration;
+        persons = new HashSet<>();
+        genres = new HashSet<>();
     }
 
     public Long getId() {
@@ -157,6 +161,18 @@ public class Movie {
 
     public void setFulldate(String fulldate) {
         this.fulldate = fulldate;
+    }
+
+    public Set<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(Set<Person> persons) {
+        this.persons = persons;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
     }
     
 

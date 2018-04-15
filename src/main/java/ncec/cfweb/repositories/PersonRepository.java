@@ -1,7 +1,10 @@
 package ncec.cfweb.repositories;
 
 import java.util.List;
+import javax.transaction.Transactional;
 import ncec.cfweb.Person;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +17,15 @@ public interface PersonRepository extends CrudRepository<Person, Person.PersonPk
     
     List<Person> findByFirstnameAndLastname(String firstname, String lastname);
 
-//    Person findById(Person.PersonPk id);//tm
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query("update Person p set p.firstname = ?1, p.lastname = ?2 where p.firstname = ?3 and p.lastname=?4")
+    void updateByFirstnameAndLastname(String firstname, String lastname, String oldfirstname, String oldlastname);
     
-//    void deleteById(Person.PersonPk id);//tm
+    @Modifying
+    @Transactional
+    void deleteByFirstnameAndLastname(String firstname, String lastname);
     
-    void deleteByFirstnameAndLastname(String firstname, String lastname);//tm
+    
     
 }

@@ -1,6 +1,7 @@
 package ncec.cfweb.services;
 
 import java.util.List;
+import ncec.cfweb.Gender;
 import ncec.cfweb.Person;
 
 /**
@@ -9,17 +10,19 @@ import ncec.cfweb.Person;
  */
 public interface PersonService {
     
-    Person addPerson(Person person);
+    Person addPersonWithMovies(Person person, List<Long> movieIds);
     
-    Person getById(Long id);
+    Person addMoviesToPerson(Person person, List<Long> movieIds);
+    
+    Person addPerson(Person person);
     
     List<Person> getByFirstAndLastName(String firstname, String lastname);
     
-    Person editPerson(String firstname, String lastname, int age);
+    Person editPerson(String oldfirstname, String oldlastname, String firstname, String lastname, int age, Gender gender);
     
     List<Person> getAll();
     
-    void deleteById(Long id);//tm
+    void deleteByFirstAndLastName(String firstname, String lastname);
     
     
 }

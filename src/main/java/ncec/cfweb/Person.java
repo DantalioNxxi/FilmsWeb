@@ -3,10 +3,12 @@ package ncec.cfweb;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,8 +54,8 @@ public class Person {
 ////    @Id
 ////    @Column
 ////    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Transient
-    private Long id;
+//    @Transient
+//    private Long id;
 
     @Id
     private String firstname;
@@ -67,41 +69,34 @@ public class Person {
     @Enumerated(EnumType.ORDINAL)
     private Gender gender;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    private Set<Filmrole> personages;
-    
-    @ManyToMany(mappedBy = "persons", fetch = FetchType.LAZY)
+    @ElementCollection
+    @ManyToMany(mappedBy = "persons", fetch = FetchType.LAZY)//tm
     private Set<Movie> movies;
 
     public Person() {
+        movies = new HashSet<>();
     }
 
-    public Person(Gender gender, String firstname, String lastname, int age) {
+    public Person(String firstname, String lastname, int age, Gender gender) {
         this.gender = gender;
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
+        movies = new HashSet<>();
     }
 
     public Person(int age, String firstname, String lastname) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
+        movies = new HashSet<>();
     }
 
     public Person(String firstname, String lastname) {
         this.firstname = firstname;
         this.lastname = lastname;
+        movies = new HashSet<>();
     }
-    
-    
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
 
     public String getFirstname() {
         return firstname;
@@ -135,6 +130,18 @@ public class Person {
         this.gender = gender;
     }
 
+    public Set<Movie> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(Set<Movie> movies) {
+        this.movies = movies;
+    }
+    
+    public void addMovie(Movie m){
+        movies.add(m);
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;

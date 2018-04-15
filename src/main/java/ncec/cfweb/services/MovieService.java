@@ -15,7 +15,7 @@ import ncec.cfweb.Movie;
 
 public interface MovieService {
     
-    Movie addMovie(String title, Date date, int duration, String description);
+    Movie addMovie(String title, int duration, String description);//Date date, 
     
     void delete(String name);
     

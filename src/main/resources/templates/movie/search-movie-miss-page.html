@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
-    <title>TODO supply a title</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+    <title>CFWeb</title>
 </head>
     
 <body>
@@ -27,10 +30,9 @@
                 <li><a href="/person/all-persons">Persons</a></li>
                 <li><a href="/movie/create-movie-page">Create Movie</a></li>
             </ul>
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
 </nav>
-    
     
     <div>Фильмов с именем <span th:text="${movieName}"></span> не найдено</div>
 
@@ -43,12 +45,16 @@
         <input name="movieName" th:value="${movieName}" type="hidden" />
         <button type="submit">Import Movie from IMDb</button>
     </form>
+    
+    
+    <form action="#" th:action="@{/}" method="get">
+        <p>
+            <button th:href="@{/index}">Main Page</button>
+        </p>
+    </form>
+    
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </body>
-
-
-        <form action="#" th:action="@{/}" method="get">
-            <p>
-                <button th:href="@{/index}">Main Page</button>
-            </p>
-        </form>
+        
 </html>

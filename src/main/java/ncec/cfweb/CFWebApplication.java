@@ -39,17 +39,7 @@ public class CFWebApplication {
         return populator;
     }
     
-    @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
-        factory.setMaxFileSize("128KB");
-        factory.setMaxRequestSize("128KB");
-        return factory.createMultipartConfig();
-    }
- 
     public static void main(String[] args) {
-        // System.out.println("11111111111111___222222222222");
         SpringApplication.run(CFWebApplication.class, args);
- 
     }
 }

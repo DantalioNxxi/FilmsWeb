@@ -48,7 +48,7 @@
                     <tr>
                         <td>Название фильма</td>
                         <td>
-                            <input type="text" name="movieName" th:value="${movieName}" th:attr="value = ${movieName}"/>
+                            <input required="true" type="text" name="movieName" th:value="${movieName}" th:attr="value = ${movieName}"/>
                         </td>
                     </tr>
                 </thead>
@@ -57,24 +57,29 @@
                     <tr>
                         <td>Дата выхода</td>
                         <td>
-                            <input type="date" name="dateCreation" th:value="${#dates.year(date)}" />
+                            <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
+                            <!--<input required="true" type="date" name="dateCreation" th:value="${date}" />-->
+                            <!--<input required="true" type="date" name="dateCreation" th:value="${#dates.year(date)}" />-->
+                            <!--<input required="true" type="date" name="dateCreation" th:value="${#dates.createNow()}" />-->
                         </td>
                     </tr>
                     <tr>
                         <td>Продолжительность</td>
                         <td>
-                            <input type="text" name="duration" th:value="${duration}" />
+                            <input required="true" type="text" name="duration" th:value="${duration}" />
                         </td>
                     </tr>
 
                     <tr>
                         <td>Описание</td>
                         <td>
-                            <input type="text" name="description" th:value="${description}" />
+                            <input required="true" type="text" name="description" th:value="${description}" />
                         </td>
                     </tr>
+                    
                 </tbody>
             </table>
+                
             <p>
                 <input type="submit" value="Create" />
                 <input type="reset" value="Reset" />

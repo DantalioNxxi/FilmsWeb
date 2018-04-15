@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.opencsv.CSVWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import org.w3c.tidy.Tidy;
 
 import javax.xml.bind.JAXB;
@@ -43,6 +45,7 @@ import javax.xml.transform.stream.StreamSource;
 public class MovieServiceImpl implements MovieService{
 
     private static final Logger LOG = LoggerFactory.getLogger(MovieServiceImpl.class);
+    
     @Autowired
     MovieRepository movieRepository;
 
@@ -50,13 +53,16 @@ public class MovieServiceImpl implements MovieService{
     PersonService personService;
     
     @Override
-    public Movie addMovie(String title, Date date, int duration, String description) {
+    public Movie addMovie(String title, int duration, String description) {
         //cheking for having such film in db
         Movie movie = new Movie();
         movie.setTitle(title);
-        movie.setDateCreation(date);
+//        movie.setDateCreation(date);
         movie.setDuration(duration);
         movie.setDescription(description);
+        
+//        get sets and : if set.not null then add this persons
+        
         return movieRepository.save(movie);
     }
     
@@ -121,12 +127,22 @@ public class MovieServiceImpl implements MovieService{
     public void exportMovies(List<Long> movieIds, OutputStream out) throws IOException {
         List<Movie> movies = getByIds(movieIds);
         try (CSVWriter csv = new CSVWriter(new OutputStreamWriter(out))) {
-            String[] line = new String[3];
+            Set<String> line = new HashSet<>();
             for (Movie movie : movies) {
-                line[0] =  movie.getTitle();
-                line[1] =  Integer.toString(movie.getDuration());
-                line[2] =  movie.getDescription();
-                csv.writeNext(line, true);
+                line.add(movie.getTitle());
+                line.add(movie.getDateCreation()==null ? "" : movie.getDateCreation().toString());
+                line.add(Integer.toString(movie.getDuration()));
+                line.add(movie.getDescription());
+                line.add(movie.getDirector()==null ? "" : movie.getDirector().getFirstname());
+                line.add(movie.getDirector()==null ? "" : movie.getDirector().getLastname());
+//                line[0] =  movie.getTitle();
+//                line[1] =  movie.getDateCreation()==null ? "" : movie.getDateCreation().toString();
+//                line[2] =  Integer.toString(movie.getDuration());
+//                line[3] =  movie.getDescription();
+//                line[4] =  movie.getGenres().toString();
+//                line[5] =  movie.getDirector()==null ? "" : movie.getDirector().getFirstname();
+//                line[6] =  movie.getDirector()==null ? "" : movie.getDirector().getLastname();
+                csv.writeNext(line.toArray(new String[line.size()]), true);
             }
         }
     }
