@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import ncec.cfweb.Movie;
+import ncec.cfweb.Movies;
 import ncec.cfweb.services.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 /**
  *
@@ -121,45 +124,40 @@ public class MovieController {
     //============Import=============
     
     @PostMapping("/import-movie")
-    String importPage(@RequestParam String movieName, RedirectAttributes redirectAttributes){
-        ArrayList<Movie> movies = (ArrayList<Movie>)movieService.importMovie(movieName);//ver2
+    RedirectView importPage(@RequestParam String movieName, RedirectAttributes redirectAttributes){
+        ArrayList<Movie> movies = (ArrayList<Movie>) movieService.importMovie(movieName);//ver2
         redirectAttributes.addFlashAttribute("movies", movies);
-        return "redirect:/movie/import-movie-result";
+        RedirectView redirectView = new RedirectView("/movie/import-movie-result");
+        redirectView.getAttributesMap().put("movies", movies);
+        return redirectView;
 //        return "redirect:/all-movies";
 //        return new ModelAndView("import/import-movie-page", "movies", movies);
     }
     
     @GetMapping(value = "/import-movie-result")
-    ModelAndView importResultPage(){ //@ModelAttribute List<Movie> movies
-        
-        
-        
-        
+    ModelAndView importMovieResult(RedirectAttributes redirectAttributes){
         return new ModelAndView("import/import-movie-page");//.addObject("movies", movies)
     }
     
-    @PostMapping(value = "/import-movie-save")
-    ModelAndView importAfterSavePage(Model model, @RequestParam List<Integer> movieIds,
-            @Valid @ModelAttribute("movies") ArrayList movies){ 
-        
-//        movies = (List<Movie>)(redirectAttributes.getFlashAttributes().get("movies"));
-        
-        System.out.println("Выведем полученные индексы movieIds: ");
-        for (Integer i : movieIds){
-            System.out.print(i+" ");}
-        
-        System.out.println("\nВыведем размер movies: ");
-        System.out.println(movies.size());
-        System.out.println(movies.get(5).getClass().getSimpleName());
+//    @PostMapping(value = "/import-movie-save")
+//    ModelAndView importAfterSavePage(@RequestParam List<Integer> movieIds, RedirectAttributes redirectAttributes){
+////        redirectAttributes.addAttribute("movies");
 //
-//        movieService.addMovie(movies.get(2));
-        
-        movieService.saveMovies(movies, movieIds);
-        
-        return new ModelAndView("import/import-movie-save-page","quantityMovies", 2)//movieIds.size()
-//                .addObject("movies", movieIds);//temporrary is four
-                .addObject("movies", movieService.getAll());//temporrary is four
-    }
+//        List<Movie> movies = (List<Movie>) redirectAttributes.getFlashAttributes().get("movies");
+//        movieService.saveMovies(movies, movieIds);
+//        return new ModelAndView("import/import-movie-save-page","quantityMovies", 2)//movieIds.size()
+////                .addObject("movies", movieIds);//temporrary is four
+//                .addObject("movies", movieService.getAll());//temporrary is four
+//    }
+//
+//    @PostMapping(value = "/import-movie-save")
+//    ModelAndView importAfterSavePage2(@RequestParam List<Integer> movieIds, RedirectAttributes flashMap){
+//        List<Movie> movies = (List<Movie>) flashMap.getFlashAttributes().get("movies");
+//        movieService.saveMovies(movies, movieIds);
+//        return new ModelAndView("import/import-movie-save-page","quantityMovies", 2)//movieIds.size()
+////                .addObject("movies", movieIds);//temporrary is four
+//                .addObject("movies", movieService.getAll());//temporrary is four
+//    }
     
     
     //===========Create Movie=====================

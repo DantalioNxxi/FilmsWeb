@@ -40,7 +40,7 @@
         </div>
     </div>
     
-    <form th:action="@{/movie/import-movie-save}" th:object="${movies}" method="post">
+    <form th:action="@{/movie/import-movie-save}" method="post">
         
         <!--<input th:value="${movies}" name="movies" type="hidden" />-->
 <!--        <input name="movies" th:object="${movies}" type="hidden" />-->
@@ -67,9 +67,16 @@
                         <p th:text="${movie.title}"></p>
                         <!--<a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>-->
                     </td>
-                    <td>
+                    <!--<td>
                         <p th:text="${stat.index}"></p>
+<<<<<<< HEAD
                         <!--<a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>-->
+<!--=======-->
+                        <!--&lt;!&ndash;<a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>&ndash;&gt;-->
+                    </td>-->
+                    <td>
+                        <p th:text="${movie.description}"></p>
+<!-->>>>>>> review7-->
                     </td>
                 </tr>
                 </tbody>

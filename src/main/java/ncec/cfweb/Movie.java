@@ -212,6 +212,10 @@ public class Movie {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Movie(" + title + ")";
+    }
 }
 
 ////    @OneToMany//or print in DB-field
