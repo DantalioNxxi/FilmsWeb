@@ -1,30 +1,17 @@
 package ncec.cfweb.services.impl;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import com.opencsv.CSVWriter;
 import ncec.cfweb.Movie;
 import ncec.cfweb.Movies;
 import ncec.cfweb.Person;
 import ncec.cfweb.repositories.MovieRepository;
 import ncec.cfweb.services.MovieService;
 import ncec.cfweb.services.PersonService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import com.opencsv.CSVWriter;
-import java.util.ArrayList;
 import org.w3c.tidy.Tidy;
 
 import javax.xml.bind.JAXB;
@@ -34,6 +21,22 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -150,7 +153,7 @@ public class MovieServiceImpl implements MovieService{
         StringWriter xml = new StringWriter();
         tidy.parse(new StringReader(html), xml);
 
-        LOG.debug("xml = {}", xml.toString());
+        LOG.warn("xml = {}", xml.toString());
 
         // XSLT
         StringWriter afterXslt = new StringWriter();
@@ -172,7 +175,7 @@ public class MovieServiceImpl implements MovieService{
             throw new IllegalStateException(ex);
         }
 
-        LOG.debug("afterXslt = {}", afterXslt.toString());
+        LOG.warn("afterXslt = {}", afterXslt.toString());
 
         // Movie
         Movies movies = JAXB.unmarshal(new StringReader(afterXslt.toString()), Movies.class);
@@ -189,10 +192,27 @@ public class MovieServiceImpl implements MovieService{
 //        System.out.println("Получем ids");
 //        List<Movie> retMovies = movies.getMovies();
         ArrayList<Movie> retMovies = (ArrayList<Movie>)movies.getMovies();//ver2
-        System.out.println("Сперва выведем названия фильмов:");
-        System.out.println(retMovies.get(2).getTitle());
-        System.out.println(retMovies.get(3).getTitle());
-        System.out.println(retMovies.get(4).getTitle());
+
+        Pattern yearPattern = Pattern.compile("([0-9]{4})");
+        for (Movie movie : retMovies) {
+            Matcher m = yearPattern.matcher(movie.getFulldate());
+            if (m.find()) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Integer.valueOf(m.group()), 0, 1);
+                movie.setDateCreation(calendar.getTime());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Update movie DateCreation to ({})", movie.getDateCreation());
+                }
+            }
+        }
+
+        LOG.warn("movies = {}", retMovies);
+
+
+//        System.out.println("Сперва выведем названия фильмов:");
+//        System.out.println(retMovies.get(2).getTitle());
+//        System.out.println(retMovies.get(3).getTitle());
+//        System.out.println(retMovies.get(4).getTitle());
 //        retMovies = moviesGetId(retMovies);
         
 //        System.out.println("Пробуем вывести ids:\n");
@@ -221,18 +241,14 @@ public class MovieServiceImpl implements MovieService{
     
     @Override
     public void saveMovies(List<Movie> movies, List<Integer> ids) {
-        //still there is nothing for return
-//        for (Movie movie : movies){
-//            System.out.println(movie.toString());
-//        }
-        
-//        movieRepository.save(movies);
+        Map<Long, Movie> movieMap = movies.stream()
+                .collect(HashMap::new, (hashMap, movie) -> hashMap.put(movie.getId(), movie), HashMap::putAll);
 
         for (Integer i : ids){
-            Movie movie = movies.get(i);
+            Movie movie = movieMap.get(i);
             if (movieRepository.findByTitle(movie.getTitle()).isEmpty()){
-                System.out.println("Выводим фильм под индексом: "+i);
-                System.out.println(movies.get(i).getClass().getSimpleName());//ver2 - title
+//                System.out.println("Выводим фильм под индексом: "+i);
+//                System.out.println(movies.get(i).getClass().getSimpleName());//ver2 - title
     //            movieRepository.save(movies.get(i));
 
                 //parse director
@@ -245,13 +261,11 @@ public class MovieServiceImpl implements MovieService{
                 }
 
                 //parse date
-                Integer date = Integer.parseInt(parseDateCreation(movie.getFulldate()));
+//                Integer date = Integer.parseInt(parseDateCreation(movie.getFulldate()));
 //                movie.setDateCreation(date);//or made to Integer?
+                movieRepository.save(movie);
             }
-            
         }
-        
-        
     }
     
     private String parseDateCreation(String fulldate){

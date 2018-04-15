@@ -124,7 +124,7 @@ public class PersonController {
     String createPerson(@RequestParam(value="firstname") String firstname,
             @RequestParam(value="lastname") String lastname,
             @RequestParam(value="age") Integer age,
-            @RequestParam(value="age") String gender) //tm
+            @RequestParam(value="gender") Gender gender) //tm
     {
         System.out.println("Внутри create person post controller: ");
         System.out.println("fname = "+firstname);

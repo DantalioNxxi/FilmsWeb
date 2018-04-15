@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import ncec.cfweb.Movie;
+import ncec.cfweb.Movies;
 
 /**
  *

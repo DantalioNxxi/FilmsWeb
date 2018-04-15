@@ -5,7 +5,7 @@
 <xsl:template match="/">
 <movies>
     
-    <xsl:for-each select="//div[@class='lister-item-content']">
+    <xsl:for-each select="//div[@class='lister-item-content' and count(p/span[@class='runtime']) &gt; 0]">
         
         <movies>
             <title><xsl:value-of select="normalize-space(h3/a[1])"/></title>
@@ -29,14 +29,13 @@
                 <!--<lastname></lastname>-->
             <!--</directors>-->
 
-<!--            <actors>
-            <xsl:for-each select="normalize-space(p[@class and position() = 3]/span[@class='ghost']/following-sibling::*)">
+            <actors>
+            <xsl:for-each select="p[@class='']/span[@class='ghost']/following-sibling::a">
                 <actors>
-                    <xsl:value-of select="normalize-space(p[@class and position() = 3]/a[2])"/>
-                    <xsl:value-of select="."/>
+                    <xsl:value-of select="normalize-space(.)"/>
                 </actors>
             </xsl:for-each>
-            </actors>-->
+            </actors>
             
 <!--            <actors2>
                 <xsl:value-of select="normalize-space(p[@class and position() = 3]/a[3])"/>
