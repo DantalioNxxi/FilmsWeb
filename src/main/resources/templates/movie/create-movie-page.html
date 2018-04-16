@@ -46,34 +46,77 @@
                 
                 <thead>
                     <tr>
-                        <td>Название фильма</td>
+                        <td>* Название фильма</td>
                         <td>
-                            <input required="true" type="text" name="movieName" th:value="${movieName}" th:attr="value = ${movieName}"/>
+                            <input required="true" type="text" name="title" th:value="${title}" />
                         </td>
                     </tr>
                 </thead>
                 
                 <tbody>
                     <tr>
-                        <td>Дата выхода</td>
+                        <td>* Дата выхода</td>
                         <td>
-                            <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
-                            <!--<input required="true" type="date" name="dateCreation" th:value="${date}" />-->
-                            <!--<input required="true" type="date" name="dateCreation" th:value="${#dates.year(date)}" />-->
-                            <!--<input required="true" type="date" name="dateCreation" th:value="${#dates.createNow()}" />-->
+                            <input required="true" type="date" name="date" th:value="${date}" />
                         </td>
                     </tr>
                     <tr>
-                        <td>Продолжительность</td>
+                        <td style="width: 100px;">* Продолжительность</td>
                         <td>
-                            <input required="true" type="text" name="duration" th:value="${duration}" />
+                            <input required="true" type="number" name="duration" th:value="${duration}" />
                         </td>
                     </tr>
 
                     <tr>
-                        <td>Описание</td>
+                        <td>* Описание</td>
                         <td>
-                            <input required="true" type="text" name="description" th:value="${description}" />
+                            <input required="true" type="text" name="description" th:value="${description}"
+                                   style="white-space: normal; width: 90%; height: 100px;" />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="3"><strong>Жанры:</strong></td>
+                    </tr>
+                    
+                    <tr th:each="genre : ${genres}">
+                        <td style="width: 50px;">   </td>
+                        <td>
+                            <input type="checkbox" name="genreIds" th:value="${genre.id}" />
+                        </td>
+                        <td>
+                            <p th:text="${genre.name}"></p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="3"><strong>Режиссёр:</strong></td>
+                    </tr>
+                    
+                    <tr th:each="person : ${persons}">
+                        <td style="width: 50px;">   </td>
+                        <td>
+                            <input type="radio" name="directorId" th:value="${person.id}" />
+                        </td>
+                        <td>
+                            <a th:href="@{/person/person-info/{personId}(personId=${person.id})}"
+                               th:text="${person.firstname}+' '+${person.lastname}"></a>
+                        </td>
+                        <!--target="_blank"--> 
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="3"><strong>Актёрский состав:</strong></td>
+                    </tr>
+                    
+                    <tr th:each="person : ${persons}">
+                        <td style="width: 50px;">   </td>
+                        <td>
+                            <input type="checkbox" name="actorIds" th:value="${person.id}" />
+                        </td>
+                        <td>
+                            <a th:href="@{/person/person-info/{personId}(personId=${person.id})}"
+                               th:text="${person.firstname}+' '+${person.lastname}"></a>
                         </td>
                     </tr>
                     
@@ -81,7 +124,7 @@
             </table>
                 
             <p>
-                <input type="submit" value="Create" />
+                <input type="submit" value="Confirm" />
                 <input type="reset" value="Reset" />
             </p>
         </form>

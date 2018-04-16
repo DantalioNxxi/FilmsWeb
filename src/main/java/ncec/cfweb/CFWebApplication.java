@@ -1,7 +1,6 @@
 
 package ncec.cfweb;
 
-import ncec.cfweb.repositories.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +12,6 @@ import org.springframework.data.repository.init.Jackson2RepositoryPopulatorFacto
 import org.springframework.data.repository.init.Jackson2ResourceReader;
 import org.springframework.data.repository.init.RepositoryPopulator;
 import org.springframework.data.repository.init.ResourceReaderRepositoryPopulator;
-//import org.springframework.boot.context.embedded.MultipartConfigFactory;
 
 
 import java.io.IOException;
@@ -27,7 +25,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan //new
+@ComponentScan
 @EnableJpaRepositories(basePackages = "ncec.cfweb.repositories")
 @Configuration
 public class CFWebApplication {

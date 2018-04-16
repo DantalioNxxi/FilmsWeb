@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 /**
@@ -38,14 +39,6 @@ public class PersonController {
     MovieService movieService;
     
     private static final Logger LOG = LoggerFactory.getLogger(PersonController.class);
-
-    // #1
-//    @GetMapping("/personInfo/{lastname}/{firstname}")
-
-    // #2
-//    @GetMapping("/personInfo") + @RequestParam String lastname, @RequestParam String firstname
-
-
     
     //===========All Persons=====================
     
@@ -82,31 +75,43 @@ public class PersonController {
     
     //===========Search Persons=====================
     
-    @RequestMapping(value = "/search-person-page", method = RequestMethod.GET)
-    @ResponseBody
-    String searchPersonPage(Model model){
-        return "person/search-person-page";
+    @RequestMapping(value = "/search-person-page", method = RequestMethod.POST)
+    String searchPerson(Model model, @RequestParam String fullName, RedirectAttributes redirectAttributes){
+        LOG.info("Searching movie with name "+ fullName+ "...");
+        redirectAttributes.addAttribute("fullName", fullName);
+        
+        List<Person> persons = personService.getAll();
+        if (!persons.isEmpty()){
+            for(Person p : persons){
+                if(p.getFirstname().concat(" ").concat(p.getLastname()).contains(fullName)){
+                    LOG.info("Such person with name "+ fullName+ " was founded");
+                    return "redirect:/person/search-person-result-page";
+                }
+            }
+        }
+        
+        model.addAttribute("fullName", fullName);
+        return "person/search-person-miss-page";
     }
     
-    @RequestMapping(value = "/search-person-page", method = RequestMethod.POST)
-    String searchPerson(Model model,
-            @RequestParam(value="firstname") String firstname,
-            @RequestParam(value="lastname") String lastname){
-        //check by parse for movieName
-        List<Person> persons = personService.getByFirstAndLastName(firstname, lastname);
-        //where is the checking must being?
-        if (persons==null || persons.isEmpty()){
-            return "person/search-person-miss-page";
+    @GetMapping(value = "/search-person-result-page")
+    ModelAndView searchPersonResultPage(@RequestParam (value = "fullName") String fullName){
+        ModelAndView mv = new ModelAndView("person/search-person-result-page");
+        List<Person> persons = personService.getAll();
+        List<Person> foundpersons = new ArrayList<>();
+        for(Person p : persons){
+            if(p.getFirstname().concat(" ").concat(p.getLastname()).contains(fullName)){
+                foundpersons.add(p);
+            }
         }
-        else{
-            model.addAttribute("persons", persons);
-            return "person/search-person-resault-page";
-        }
+        mv.addObject("persons", foundpersons);
+        return mv;
     }
     
     @RequestMapping(value = "/search-person-miss-page", method = RequestMethod.GET)
     @ResponseBody
-    String searchMovieMissPage(Model model){
+    String searchPersonMissPage(Model model, @PathVariable(value = "fullName") String fullName){
+        model.addAttribute("fullName", fullName);
         return "person/search-person-miss-page";
     }
     

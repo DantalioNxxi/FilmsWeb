@@ -24,6 +24,8 @@ public class Genre {
     public Genre(String name) {
         this.name = name;
     }
+    
+//    public Set<Movie> movies
 
     protected Genre() {
     }
@@ -68,17 +70,12 @@ public class Genre {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+    
+    
     
 }
-
-//    static{//how to...
-////        FANTASTIC("Фантастика"),
-////        FANTASY("Фэнтези"),
-////        DRAMA("Драма"),
-////        MELODRAMA("Мелодрама"),
-////        THRILLER("Триллер"),
-////        DETECTIVE("Детектив"),
-////        HORROR("Ужасы"),
-////        ADVENTURE("Приключение"),
-////        COMEDY("Комедия");
-//    }

@@ -76,7 +76,7 @@
                         <td style="width: 50px;">   </td>
                         <td><p th:text="${stat.count}"></p></td>
                         <td>
-                        <a target="_blank" th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                        <a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                         </td>
                     </tr>
                     </tbody>

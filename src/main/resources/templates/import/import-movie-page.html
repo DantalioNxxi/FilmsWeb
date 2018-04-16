@@ -40,49 +40,55 @@
         </div>
     </div>
     
-    <form th:action="@{/movie/import-movie-save}" method="post">
+        <p>
+            <a class="btn btn-primary btn-lg" th:href="@{/}" role="button">Main Page
+            </a>
+        </p>
         
         <!--<input th:value="${movies}" name="movies" type="hidden" />-->
 <!--        <input name="movies" th:object="${movies}" type="hidden" />-->
-        
-        <div class="row">
-            <input type="submit" class="btn btn-success btn-lg" value="Save Films" />
-        </div>
-        
-        <p>Choose movies for to save to repository:</p>
+<!--        <form th:action="@{/movie/import-movie-save}" method="post">
+            <div class="row">
+                <input type="button" class="btn btn-success btn-lg" value="Save Films" />
+            </div>
+        </form>-->
+        <!--<h2>Choose movies for to save to repository:</h2>-->
+        <h2>Next movies had saved to repository:</h2>
 
         <div class="row">
             <table class="table table-striped table-hover">
                 <thead>
                 <tr>
                     <th>Movies</th>
+                    <th>Number</th>
+                    <th>Description</th>
                 </tr>
+                    
                 </thead>
                 <tbody>
                 <tr th:each="movie, stat : ${movies}">
                     <td>
-                        <input type="checkbox" name="movieIds" th:value="${stat.index}" />
+                        <!--<input type="checkbox" name="movieIds" th:value="${stat.index}" />-->
                     </td>
                     <td>
                         <p th:text="${movie.title}"></p>
                         <!--<a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>-->
                     </td>
-                    <!--<td>
-                        <p th:text="${stat.index}"></p>
-<<<<<<< HEAD
-                        <!--<a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>-->
-<!--=======-->
-                        <!--&lt;!&ndash;<a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>&ndash;&gt;-->
+                    <td>
+                        <p th:text="${stat.count}"></p>
+                    </td>>
+<!--                    <td>
+                        <a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                        &lt;!&ndash;<a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>&ndash;&gt;
                     </td>-->
                     <td>
                         <p th:text="${movie.description}"></p>
-<!-->>>>>>> review7-->
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-    </form>
+    
 </div><!-- /.container -->
 
 

@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -46,19 +47,18 @@ public class Movie {
     @XmlElement
     private String title;
 
+    @DateTimeFormat (pattern="yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date dateCreation;
 
     private int duration;
 
     @XmlElement
+    @Column(length = 2500)
     private String description;
     
-    @ManyToOne(optional = true)
-    private User creator;
-    
-    @Transient
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY, targetEntity = Genre.class)
+    @ElementCollection
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER, targetEntity = Genre.class)
     private Set<Genre> genres;
     
     @ElementCollection
@@ -89,6 +89,13 @@ public class Movie {
         persons = new HashSet<>();
         genres = new HashSet<>();
     }
+    
+    public Movie(String title, int duration, String description) {
+        this.title = title;
+        this.duration = duration;
+        persons = new HashSet<>();
+        genres = new HashSet<>();
+    }
 
     public Long getId() {
         return id;
@@ -96,14 +103,6 @@ public class Movie {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
-
-    public User getCreator() {
-        return creator;
     }
     
     public String getTitle() {
@@ -174,6 +173,10 @@ public class Movie {
     public Set<Genre> getGenres() {
         return genres;
     }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
     
 
     @Override
@@ -217,7 +220,3 @@ public class Movie {
         return "Movie(" + title + ")";
     }
 }
-
-////    @OneToMany//or print in DB-field
-//    @ElementCollection
-//    private Set<String> countries;

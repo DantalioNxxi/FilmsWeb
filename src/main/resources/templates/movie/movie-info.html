@@ -53,22 +53,44 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>Описание</td>
-                        <td th:text="*{description}"></td>
+                        <td>Дата выхода</td>
+                        <td th:text="*{dateCreation}"></td>
                     </tr>
+                        
                     <tr>
                         <td>Продолжительность</td>
                         <td th:text="*{duration}"></td>
                         <!--<td th:text="${Dates.format(movie.duration, '%Y')}"></td>-->
                     </tr>
+                        
                     <tr>
-                        <td>Дата выхода</td>
-                        <td th:text="*{dateCreation}"></td>
+                        <td>Описание</td>
+                        <td th:text="*{description}"></td>
                     </tr>
+                        
+                    <tr>
+                        <td colspan="3"></td>
+                    </tr> 
+                    <tr>
+                        <td colspan="3"><strong>Жанры:</strong></td>
+                    </tr>
+                        
+                    <tr th:each="genre, stat : ${genres}">
+                        <td style="width: 50px;">   </td>
+                        <td><p th:text="${stat.count}"></p></td>
+                        <td>
+                            <p th:text="${genre.name}"></p>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="3"></td>
+                    </tr>    
                     <tr>
                         <td>Режиссёр</td>
                         <td th:text="|${movie?.director?.firstname} ${movie?.director?.lastname}|"></td>
                     </tr>
+                        
                     <tr>
                         <td colspan="3"><strong>Актёрский состав:</strong></td>
                     </tr>
@@ -76,7 +98,7 @@
                         <td style="width: 50px;">   </td>
                         <td><p th:text="${stat.count}"></p></td>
                         <td>
-                        <a  target="_blank" th:href="@{/person/person-info(lastname=${person.lastname}, firstname=${person.firstname})}"
+                        <a  th:href="@{/person/person-info(lastname=${person.lastname}, firstname=${person.firstname})}"
                    th:text="${person.firstname} + ' ' + ${person.lastname}"></a>
                         </td>
                     </tr>
@@ -91,20 +113,3 @@
         <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
     </body>
 </html>
-
-<!--        <table border="1">
-            <thead>
-            <tr>
-                <th>Title</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="movie : ${movies}">
-                <td>
-                    <a th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
-                </td>
-            </tr>
-            </tbody>
-        </table>-->
-
-<!--for export-->

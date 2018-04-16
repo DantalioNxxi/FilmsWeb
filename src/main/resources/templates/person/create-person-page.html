@@ -86,7 +86,7 @@
                             </td>
                             <td>
 <!--                                <p th:text="${movie.title}"></p>-->
-                                <a target="_blank" th:href="@{/movie/movieInfo/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                                <a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                             </td>
                         </tr>
                     </tbody>

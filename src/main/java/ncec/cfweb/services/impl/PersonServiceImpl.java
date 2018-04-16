@@ -35,6 +35,27 @@ public class PersonServiceImpl implements PersonService{
         LOG.info("Delete person through ServiceImpl...");
         personRepository.deleteByFirstnameAndLastname(firstname, lastname);
     }
+
+    @Override
+    public Person getById(Long id) {
+        return personRepository.findById(id);
+    }
+
+    @Override
+    public Person editPerson(Long id, String firstname, String lastname, int age, Gender gender) {
+        Person newp = personRepository.findById(id);
+        newp.setFirstname(firstname);
+        newp.setLastname(lastname);
+        newp.setAge(age);
+        newp.setGender(gender);
+        return personRepository.save(newp);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        personRepository.deleteById(id);
+    }
+    
     
     //possible to add method for to save a person
 

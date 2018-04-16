@@ -36,7 +36,7 @@
     <div class="row">
         <form th:action="@{/movie/search-movie-page}" method="post">
             <p>
-                Search movie <input type="text" name="movieName" th:value="${movieName}" />
+                Search movie <input required="true" type="text" name="movieName" th:value="${movieName}" />
             </p>
             <p><input type="submit" value="Search" /> <input type="reset" value="Reset" /></p>
         </form>
@@ -44,7 +44,7 @@
 
     <form th:action="@{/movie/export-movies}" method="post">
         <div class="row">
-            <input type="submit" class="btn btn-success btn-lg" value="Export Films" />
+            <input required="true" type="submit" class="btn btn-success btn-lg" value="Export Films" />
         </div>
 
         <div class="row">
@@ -56,12 +56,13 @@
                 </tr>
                 </thead>
                 <tbody>
+                    
                 <tr th:each="movie : ${movies}">
                     <td>
                         <input type="checkbox" name="movieIds" th:value="${movie.id}" />
                     </td>
                     <td>
-                        <a target="_blank" th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
+                        <a th:href="@{/movie/movie-info/{movieId}(movieId=${movie.id})}" th:text="${movie.title}"></a>
                     </td>
                 </tr>
                 </tbody>

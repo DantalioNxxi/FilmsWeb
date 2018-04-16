@@ -10,10 +10,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.ManyToMany;
@@ -25,44 +28,20 @@ import javax.persistence.Transient;
  * @author DantalioNxxi
  */
 @Entity
-@IdClass(Person.PersonPk.class)
 public class Person {
 
-    public static class PersonPk implements Serializable {
-        
-        static final long serialVersionUID = 1L;
-
-        String firstname;
-        String lastname;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            PersonPk personPk = (PersonPk) o;
-            return Objects.equals(firstname, personPk.firstname) &&
-                    Objects.equals(lastname, personPk.lastname);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(firstname, lastname);
-        }
-        
-    }
-    
-////    @Id
-////    @Column
-////    @GeneratedValue(strategy=GenerationType.AUTO)
-//    @Transient
-//    private Long id;
-
     @Id
+    @Column
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+
+    @Column(name = "firstname")
     private String firstname;
 
-    @Id
+    @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "age")
     private int age;
 
     @Column(name = "gender")
@@ -70,7 +49,7 @@ public class Person {
     private Gender gender;
 
     @ElementCollection
-    @ManyToMany(mappedBy = "persons", fetch = FetchType.LAZY)//tm
+    @ManyToMany(mappedBy = "persons", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)//tm
     private Set<Movie> movies;
 
     public Person() {
@@ -140,6 +119,14 @@ public class Person {
     
     public void addMovie(Movie m){
         movies.add(m);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
     
     @Override

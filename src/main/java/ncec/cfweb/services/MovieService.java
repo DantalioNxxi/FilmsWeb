@@ -18,7 +18,13 @@ public interface MovieService {
     
     Movie addMovie(String title, int duration, String description);//Date date, 
     
+    Movie addMovie(Movie movie);
+    
+    Movie addMovieWithActorsAndGenres(Movie movie, List<Long> actors, List<Integer> genreIds);
+    
     void delete(String name);
+    
+    void deleteById(Long id);
     
     List<Movie> getByName(String name);
     
@@ -26,13 +32,12 @@ public interface MovieService {
     
     List<Movie> getAll();
 
-    Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname);
-
     List<Movie> getByIds(Collection<Long> movieIds);
     
     void exportMovies(List<Long> movieIds, OutputStream out) throws IOException;
     
     List<Movie> importMovie(String movieName);
     
-    void saveMovies(List<Movie> movies, List<Integer> ids);
+    void savingMovies(List<Movie> movies);
+    
 }

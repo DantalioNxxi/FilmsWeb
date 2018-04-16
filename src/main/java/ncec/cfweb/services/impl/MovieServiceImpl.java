@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import ncec.cfweb.Genre;
 
 /**
  *
@@ -56,6 +57,15 @@ public class MovieServiceImpl implements MovieService{
     @Autowired
     PersonService personService;
     
+    @Autowired
+    GenreServiceImpl genreService;
+
+    @Override
+    public void deleteById(Long id) {
+        movieRepository.deleteById(id);
+        LOG.info("Movie has deleted!");
+    }
+    
     @Override
     public Movie addMovie(String title, int duration, String description) {
         //cheking for having such film in db
@@ -67,6 +77,37 @@ public class MovieServiceImpl implements MovieService{
         
 //        get sets and : if set.not null then add this persons
         
+        return movieRepository.save(movie);
+    }
+
+    @Override
+    public Movie addMovieWithActorsAndGenres(Movie movie, List<Long> actors, List<Integer> genreIds) {
+        LOG.info("In addMovieWithActors: ");
+        
+        Set<Person> actorset = new HashSet<>();
+        if (!actors.isEmpty())
+        {
+            for (Long idc : actors){
+                actorset.add(personService.getById(idc));
+            }
+        }
+        movie.setPersons(actorset);
+        LOG.info("Actor's Set was added: ");
+        
+        Set<Genre> genreset = new HashSet<>();
+        if(!genreIds.isEmpty()){
+            for (Integer idc : genreIds){
+                genreset.add(genreService.findById(idc));
+            }
+        }
+        movie.setGenres(genreset);
+        LOG.info("Genre's Set was added: ");
+        
+        return movieRepository.save(movie);
+    }
+    
+    @Override
+    public Movie addMovie(Movie movie) {
         return movieRepository.save(movie);
     }
     
@@ -91,76 +132,46 @@ public class MovieServiceImpl implements MovieService{
     public List<Movie> getAll() {
         return movieRepository.findAll();//is permit?
     }
-
     
-    //исправить на update!
-    @Override
-    public Movie editMovie(String movieName, Date date, Integer duration, String description, String directorFirstname, String directorLastname) {
-        List<Movie> movies = movieRepository.findByTitle(movieName);
-        if (movies.isEmpty()) {
-            throw new IllegalArgumentException("Movie not found");
-        }
-
-        if (movies.size() > 1) {
-            throw new IllegalArgumentException("Several movies exist with specified name");
-        }
-
-        Movie movie = movies.get(0);
-        movie.setDateCreation(date);
-        movie.setDuration(duration);
-        List<Person> personList = personService.getByFirstAndLastName(directorFirstname, directorLastname);
-
-        if (personList.isEmpty()) {
-            throw new IllegalArgumentException("Person not found");
-        }
-        if (personList.size() > 1) {
-            throw new IllegalArgumentException("Several people exist with specified name");
-        }
-
-        movie.setDirector(personList.get(0));
-        return movieRepository.save(movie);
-    }
-
     @Override
     public List<Movie> getByIds(Collection<Long> movieIds) {
         return (List<Movie>) movieRepository.findAll(movieIds);
     }
     
-    // VYZH: todo: 1) return File/Stream/etc -OR- 2) add OutputStream in parameters
     @Override
     public void exportMovies(List<Long> movieIds, OutputStream out) throws IOException {
         List<Movie> movies = getByIds(movieIds);
         try (CSVWriter csv = new CSVWriter(new OutputStreamWriter(out))) {
-            Set<String> line = new HashSet<>();
+            
+            String[] line = new String[7];
             for (Movie movie : movies) {
-                line.add(movie.getTitle());
-                line.add(movie.getDateCreation()==null ? "" : movie.getDateCreation().toString());
-                line.add(Integer.toString(movie.getDuration()));
-                line.add(movie.getDescription());
-                line.add(movie.getDirector()==null ? "" : movie.getDirector().getFirstname());
-                line.add(movie.getDirector()==null ? "" : movie.getDirector().getLastname());
-//                line[0] =  movie.getTitle();
+                line[0] =  movie.getTitle();
+                line[1] = movie.getDateCreation()==null?"":movie.getDateCreation().toString();
 //                line[1] =  movie.getDateCreation()==null ? "" : movie.getDateCreation().toString();
-//                line[2] =  Integer.toString(movie.getDuration());
-//                line[3] =  movie.getDescription();
-//                line[4] =  movie.getGenres().toString();
-//                line[5] =  movie.getDirector()==null ? "" : movie.getDirector().getFirstname();
-//                line[6] =  movie.getDirector()==null ? "" : movie.getDirector().getLastname();
-                csv.writeNext(line.toArray(new String[line.size()]), true);
+                line[2] =  Integer.toString(movie.getDuration());
+                line[3] =  movie.getDescription()==null?"":movie.getDescription();
+                if (movie.getGenres()==null||movie.getGenres().isEmpty()){
+                    line[4] = "";
+                } else {
+                    line[4] =  movie.getGenres().toString();
+                }
+                line[5] =  movie.getDirector()==null ? "" : movie.getDirector().getFirstname();
+                line[6] =  movie.getDirector()==null ? "" : movie.getDirector().getLastname();
+                csv.writeNext(line, true);
             }
         }
     }
 
     @Override
     public List<Movie> importMovie(String movieName) {
-        // http request
-        RestTemplate restTemplate = new RestTemplate();
+        
+        RestTemplate restTemplate = new RestTemplate();// http request
         String html = restTemplate
                 .getForObject("http://www.imdb.com/search/title?title={0}&title_type=feature,tv_movie,tv_series",
                         String.class, movieName);
 
-        // sanitize JTidy
-        Tidy tidy = new Tidy();
+        
+        Tidy tidy = new Tidy();// sanitize JTidy
         tidy.setXmlOut(true);
         tidy.setQuiet(true);
         tidy.setShowWarnings(false);
@@ -171,9 +182,8 @@ public class MovieServiceImpl implements MovieService{
         tidy.parse(new StringReader(html), xml);
 
         LOG.warn("xml = {}", xml.toString());
-
-        // XSLT
-        StringWriter afterXslt = new StringWriter();
+        
+        StringWriter afterXslt = new StringWriter();// XSLT
         try {
             InputStream xsl = getClass().getResourceAsStream("/import.xsl");
             TransformerFactory tf = TransformerFactory.newInstance();
@@ -185,8 +195,8 @@ public class MovieServiceImpl implements MovieService{
             throw new IllegalStateException(e);
         }
         
-        //for checking after xsl-handle:
-        try(FileWriter fw = new FileWriter("afterXsltForShow.txt", false)){
+        
+        try(FileWriter fw = new FileWriter("afterXsltForShow.txt", false)){//log after xsl-handle:
               fw.write(afterXslt.toString());
         } catch (IOException ex){
             throw new IllegalStateException(ex);
@@ -194,23 +204,16 @@ public class MovieServiceImpl implements MovieService{
 
         LOG.warn("afterXslt = {}", afterXslt.toString());
 
-        // Movie
-        Movies movies = JAXB.unmarshal(new StringReader(afterXslt.toString()), Movies.class);
+        Movies movies = JAXB.unmarshal(new StringReader(afterXslt.toString()), Movies.class);// Movies
 
-        // save Repository
-        // return
+        // First version: save Repository
+        // and then return
 
-        // todo:
-        // 1) проверить дублирование названий фильмов, убрать, сделать название на английском
-        // 2) выбор фильмов подлежащих импорту, импортировать не все сразу
-        // 3) добавить параметры - год, жанры, режисер, актеры
-//        return (List<Movie>) movieRepository.save(movies.getMovies());
+        LOG.info("Change dates!");
+        List<Movie> retMovies = movies.getMovies();//ver2
+//        ArrayList<Movie> retMovies = (ArrayList<Movie>)movies.getMovies();//ver2
 
-//        System.out.println("Получем ids");
-//        List<Movie> retMovies = movies.getMovies();
-        ArrayList<Movie> retMovies = (ArrayList<Movie>)movies.getMovies();//ver2
-
-        Pattern yearPattern = Pattern.compile("([0-9]{4})");
+        Pattern yearPattern = Pattern.compile("([0-9]{4})");//check dates of movies
         for (Movie movie : retMovies) {
             Matcher m = yearPattern.matcher(movie.getFulldate());
             if (m.find()) {
@@ -223,78 +226,59 @@ public class MovieServiceImpl implements MovieService{
             }
         }
 
-        LOG.warn("movies = {}", retMovies);
-
-
-//        System.out.println("Сперва выведем названия фильмов:");
-//        System.out.println(retMovies.get(2).getTitle());
-//        System.out.println(retMovies.get(3).getTitle());
-//        System.out.println(retMovies.get(4).getTitle());
-//        retMovies = moviesGetId(retMovies);
+        LOG.warn("movies = {retMovies.size}", retMovies.size());
         
-//        System.out.println("Пробуем вывести ids:\n");
-//        for (Movie movie : retMovies){
-//            System.out.println(movie.getId());
-            
-//        System.out.println("\nПросто выведем этот лист:");
-//        for (Movie movie : retMovies){
-//            System.out.println(movie.toString());
-//        }
-
+        
         return retMovies;
-//        return movies.getMovies();
-    }
-    
-    private List<Movie> moviesGetId(List<Movie> movies){//may be with help os Stream API?
-        long i = 1;
-        
-        for (Movie movie : movies){
-            movie.setId(i);
-            System.out.println("i="+i);
-            i++;
-        }
-        return movies;
     }
     
     @Override
-    public void saveMovies(List<Movie> movies, List<Integer> ids) {
-        Map<Long, Movie> movieMap = movies.stream()
-                .collect(HashMap::new, (hashMap, movie) -> hashMap.put(movie.getId(), movie), HashMap::putAll);
+    public void savingMovies(List<Movie> movies){
+        //save movies:
+        LOG.info("Saving imported movies!", movies.size());
+//        Map<Long, Movie> movieMap = retMovies.stream()
+//                .collect(HashMap::new, (hashMap, movie) -> hashMap.put(movie.getId(), movie), HashMap::putAll);
 
-        for (Integer i : ids){
-            Movie movie = movieMap.get(i);
+        for (Movie movie : movies){
             if (movieRepository.findByTitle(movie.getTitle()).isEmpty()){
-//                System.out.println("Выводим фильм под индексом: "+i);
-//                System.out.println(movies.get(i).getClass().getSimpleName());//ver2 - title
-    //            movieRepository.save(movies.get(i));
 
-                //parse director
-                String[] str = movie.getFullname().split(" ");
-                if (personService.getByFirstAndLastName(str[0], str[1]).isEmpty()){
-                    Person person = new Person(str[0], str[1]);
-                    movie.setDirector(personService.addPerson(person));
+//                parse director
+                LOG.info("Try parse director!");
+                String[] str;
+                if (movie.getFullname().contains(" ")){
+                    LOG.info("Contains _!");
+                     str = movie.getFullname().split(" ");
+                        if (personService.getByFirstAndLastName(str[0], str[1]).isEmpty()){
+                           Person person = new Person(str[0], str[1]);
+                           movie.setDirector(personService.addPerson(person));
+                           person.addMovie(movie);//tm
+                       } else {
+                           movie.setDirector(personService.getByFirstAndLastName(str[0], str[1]).get(0));
+                           personService.getByFirstAndLastName(str[0], str[1]).get(0).addMovie(movie);//tm
+                       }
                 } else {
-                    movie.setDirector(personService.getByFirstAndLastName(str[0], str[1]).get(0));//tm
+                    LOG.info("Not contains _!");
+                    str = new String[1];
+                    str[0] = movie.getFullname();
+                    if (personService.getByFirstAndLastName(str[0], "defaultLastname").isEmpty()){
+                           Person person = new Person(str[0], "defaultLastname");
+                           movie.setDirector(personService.addPerson(person));
+                           person.addMovie(movie);//tm
+                       } else {
+                           movie.setDirector(personService.getByFirstAndLastName(str[0], "defaultLastname").get(0));//tm
+                           personService.getByFirstAndLastName(str[0], "defaultLastname").get(0).addMovie(movie);//tm
+                    }
                 }
+                LOG.info("Directors successfully were saved!");
+                
 
                 //parse date
-//                Integer date = Integer.parseInt(parseDateCreation(movie.getFulldate()));
-//                movie.setDateCreation(date);//or made to Integer?
+    //                Integer date = Integer.parseInt(parseDateCreation(movie.getFulldate()));
+    //                movie.setDateCreation(date);//or made to Integer?
                 movieRepository.save(movie);
             }
         }
+        LOG.info("Movies was saved!", movies.size());
     }
-    
-    private String parseDateCreation(String fulldate){
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < fulldate.length(); i++){
-            if (Character.isDigit(fulldate.charAt(i))){
-                int elem = Character.digit(fulldate.charAt(i), 10);
-                sb.append(elem);
-            }
-        }
-        return sb.toString();
-    }
-
     //END of class
 }
